@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Popup · Interaction fixture</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <nav aria-label="Main"><a href="/">Home</a></nav>
+  </header>
+  <main>
+    <h1>Popup</h1>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+    <p><button type="button" id="hello">Send hello</button></p>
+    <p><button type="button" id="close">Close window</button></p>
+    <script>
+      document.getElementById('hello').addEventListener('click', () => {
+        if (window.opener) window.opener.postMessage('hello', location.origin);
+        document.getElementById('status').textContent = 'Sent';
+      });
+      document.getElementById('close').addEventListener('click', () => { window.close(); });
+    </script>
+  </main>
+</body>
+</html>

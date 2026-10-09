@@ -1,0 +1,10 @@
+{
+  "name": "interaction-fixture",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Independent demo app with browser interactions for Agent Device Lab to drive. Zero dependencies.",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs"
+  }
+}

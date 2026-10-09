@@ -1,0 +1,57 @@
+{
+  "name": "seeded mobile defect: Reports toolbar overflow (mobile-390)",
+  "description": "Passes when the lab DETECTS the seeded defect: horizontal overflow, a clipped Export CSV button, and a recorded finding that it can only be reached by a sideways pan, even though the automated tap succeeds.",
+  "project": "../fixtures/invoice-app",
+  "device": "mobile-390",
+  "steps": [
+    {
+      "label": "start page is clean",
+      "expect": {
+        "route": "/invoices",
+        "layout": "clean"
+      }
+    },
+    {
+      "do": "click",
+      "role": "link",
+      "name": "Reports",
+      "expect": {
+        "navigated": true,
+        "heading": "Reports",
+        "layout": [
+          {
+            "kind": "horizontal-overflow"
+          },
+          {
+            "kind": "control-clipped",
+            "name": "Export CSV"
+          }
+        ]
+      }
+    },
+    {
+      "do": "click",
+      "role": "button",
+      "name": "Export CSV",
+      "label": "semantic click still succeeds, but only after a sideways pan",
+      "expect": {
+        "message": "Export ready: 2 invoices",
+        "note": "panned sideways",
+        "findings": [
+          {
+            "kind": "horizontal-pan-required",
+            "name": "Export CSV",
+            "severity": "high"
+          },
+          {
+            "kind": "control-clipped",
+            "name": "Export CSV"
+          },
+          {
+            "kind": "horizontal-overflow"
+          }
+        ]
+      }
+    }
+  ]
+}

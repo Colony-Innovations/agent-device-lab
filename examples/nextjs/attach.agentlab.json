@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "name": "nextjs 14 app router (attach to a running dev server)",
+  "web": {
+    "command": "npx next dev -p 5383 -H 127.0.0.1",
+    "cwd": ".",
+    "url": "http://127.0.0.1:5383",
+    "readiness": { "path": "/", "status": 200, "timeoutMs": 120000 },
+    "reuseExisting": true
+  },
+  "startPath": "/",
+  "device": "mobile-390"
+}

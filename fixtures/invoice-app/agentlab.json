@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "name": "invoice-fixture",
+  "web": {
+    "command": "npm run dev",
+    "cwd": ".",
+    "url": "http://127.0.0.1:5199",
+    "env": { "PORT": "5199" },
+    "readiness": { "path": "/health", "status": 200, "timeoutMs": 30000 },
+    "reuseExisting": true
+  },
+  "startPath": "/invoices",
+  "device": "mobile-390"
+}

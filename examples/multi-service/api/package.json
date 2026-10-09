@@ -1,0 +1,7 @@
+{
+  "name": "multi-service-api",
+  "private": true,
+  "scripts": {
+    "dev": "node server.mjs"
+  }
+}

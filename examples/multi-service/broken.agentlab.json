@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "name": "multi-service-example (api crashes on startup)",
+  "services": {
+    "api": {
+      "command": "node api/server.mjs",
+      "cwd": ".",
+      "url": "http://127.0.0.1:5341",
+      "env": { "PORT": "5341", "API_CRASH": "1" },
+      "requiredEnv": ["DEMO_API_TOKEN"],
+      "readiness": { "path": "/health", "status": 200, "timeoutMs": 20000 }
+    },
+    "worker": {
+      "command": "node worker/worker.mjs",
+      "cwd": ".",
+      "env": { "API_URL": "http://127.0.0.1:5341" },
+      "requiredEnv": ["DEMO_API_TOKEN"],
+      "readiness": { "log": "worker ready", "timeoutMs": 10000 },
+      "dependsOn": ["api"]
+    },
+    "web": {
+      "command": "node web/server.mjs",
+      "cwd": ".",
+      "url": "http://127.0.0.1:5342",
+      "env": { "PORT": "5342", "API_URL": "http://127.0.0.1:5341" },
+      "requiredEnv": ["DEMO_API_TOKEN"],
+      "readiness": { "path": "/health", "status": 200, "timeoutMs": 20000 },
+      "dependsOn": ["api"],
+      "shutdown": { "signal": "SIGTERM", "graceMs": 3000 }
+    }
+  },
+  "app": { "service": "web" },
+  "startPath": "/",
+  "device": "mobile-390"
+}

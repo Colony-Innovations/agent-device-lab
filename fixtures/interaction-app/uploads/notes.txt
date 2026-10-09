@@ -1,0 +1,3 @@
+Interaction fixture notes
+Line two of the sample upload.
+Line three ends here.

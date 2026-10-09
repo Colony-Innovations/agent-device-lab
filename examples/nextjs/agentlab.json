@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "name": "nextjs 14 app router (cold start)",
+  "web": {
+    "command": "npx next dev -p 5382 -H 127.0.0.1",
+    "cwd": ".",
+    "url": "http://127.0.0.1:5382",
+    "env": {
+      "NEXT_TELEMETRY_DISABLED": "1"
+    },
+    "readiness": {
+      "path": "/",
+      "status": 200,
+      "timeoutMs": 120000
+    },
+    "reuseExisting": false
+  },
+  "startPath": "/",
+  "device": "mobile-390",
+  "scan": {
+    "devices": [
+      "mobile-320",
+      "mobile-390",
+      "tablet-768",
+      "desktop-1440"
+    ],
+    "scenarios": [
+      {
+        "name": "Home as loaded",
+        "route": "/"
+      },
+      {
+        "name": "Home explored",
+        "route": "/",
+        "explore": true,
+        "devices": [
+          "mobile-390"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Invoice · Fixture</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body data-page="invoice">
+  <header class="topbar">
+    <nav aria-label="Main">
+      <a href="/invoices">Invoices</a>
+      <a href="/reports">Reports</a>
+    </nav>
+  </header>
+  <main>
+    <h1 id="invoice-title">Invoice</h1>
+    <dl class="invoice-meta">
+      <dt>Customer</dt><dd id="invoice-customer"></dd>
+      <dt>Amount</dt><dd id="invoice-amount"></dd>
+      <dt>Status</dt><dd id="invoice-status"></dd>
+    </dl>
+    <button type="button" id="mark-paid" class="primary">Mark as paid</button>
+    <p><a href="/invoices">Back to invoices</a></p>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Upload · Interaction fixture</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <nav aria-label="Main"><a href="/">Home</a></nav>
+  </header>
+  <main>
+    <h1>Upload</h1>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+    <label for="attachments">Attachments</label>
+    <input type="file" id="attachments" multiple>
+    <p><button type="button" id="choose-photo">Choose photo</button></p>
+    <input type="file" id="photo" class="visually-hidden" accept="image/*" tabindex="-1" aria-label="Photo">
+    <script>
+      const status = document.getElementById('status');
+      const describe = (files) => [...files].map((f) => `${f.name} (${f.size} bytes)`).join(', ') || 'none';
+      document.getElementById('attachments').addEventListener('change', (e) => { status.textContent = `Attached: ${describe(e.target.files)}`; });
+      document.getElementById('choose-photo').addEventListener('click', () => document.getElementById('photo').click());
+      document.getElementById('photo').addEventListener('change', (e) => { status.textContent = `Photo: ${describe(e.target.files)}`; });
+    </script>
+  </main>
+</body>
+</html>

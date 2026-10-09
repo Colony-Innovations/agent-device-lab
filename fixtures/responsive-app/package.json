@@ -1,0 +1,10 @@
+{
+  "name": "responsive-fixture",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Independent demo app with seeded responsive defects, intentional overflow patterns and unsafe controls for Agent Device Lab's stateful responsive scanner. Zero dependencies.",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs"
+  }
+}

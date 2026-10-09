@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Agent Device Lab</title>
+<link rel="stylesheet" href="/app.css">
+<script src="/app.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="brand">Agent Device Lab</div>
+  <span id="state" class="pill" data-state="idle">connecting</span>
+  <span id="session" class="muted mono"></span>
+  <span class="grow"></span>
+  <span id="conn" class="conn" data-conn="connecting">connecting…</span>
+</header>
+
+<section class="status" id="status" aria-label="Session status">
+  <div><span class="k">Project</span><span id="s-project">–</span></div>
+  <div><span class="k">Device</span><span id="s-device">–</span></div>
+  <div class="wide"><span class="k">URL</span><span id="s-url" class="mono">–</span></div>
+  <div><span class="k">Console errors</span><span id="s-console" class="num">0</span></div>
+  <div><span class="k">Failed requests</span><span id="s-failed" class="num">0</span></div>
+  <div><span class="k">Findings</span><span id="s-findings" class="num">0</span></div>
+  <div class="wide"><span class="k">Server</span><span id="s-server">–</span></div>
+</section>
+
+<section id="supervision" class="supervision" aria-label="Session supervision" hidden>
+  <div class="sup-main">
+    <span id="ctl-badge" class="mode-badge" role="status" data-mode="agent">Agent in control</span>
+    <span id="ctl-detail" class="muted small"></span>
+    <div id="ctl-buttons" class="ctl-buttons" role="group" aria-label="Supervision controls">
+      <button type="button" id="ctl-pause" data-op="pause" aria-pressed="false" aria-disabled="true">Pause after this action</button>
+      <button type="button" id="ctl-pause-next" data-op="pause-next" aria-disabled="true">Pause before next action</button>
+      <button type="button" id="ctl-resume" data-op="resume" aria-disabled="true">Resume</button>
+      <button type="button" id="ctl-takeover" data-op="takeover" aria-pressed="false" aria-disabled="true">Take over</button>
+      <button type="button" id="ctl-return" data-op="return" aria-disabled="true">Return control to agent</button>
+      <button type="button" id="ctl-stop" data-op="stop" class="danger" aria-disabled="true">Stop run</button>
+      <button type="button" id="ctl-emergency-stop" data-op="emergency-stop" class="danger strong" aria-disabled="true">Emergency stop</button>
+    </div>
+  </div>
+  <div id="ctl-error" class="ctl-error" role="alert" hidden></div>
+</section>
+<p id="ctl-viewonly" class="viewonly small muted" hidden>view-only link: controls need the URL from `agentlab ui`</p>
+
+<div id="notice" class="notice" hidden></div>
+<section id="start-error" class="start-error" hidden aria-live="polite"></section>
+
+<section id="scan" class="panel scan" hidden aria-label="Stateful scan">
+  <h2>Scan <span id="scan-caption" class="muted small"></span></h2>
+  <div id="scan-verdict" class="scan-verdict"></div>
+  <div class="scan-matrix-wrap"><table id="scan-matrix" class="scan-matrix"></table></div>
+  <div id="scan-run" class="scan-run" hidden></div>
+</section>
+
+<main class="grid">
+  <section class="panel viewport-panel" aria-label="Live viewport">
+    <h2>Viewport <span id="vp-caption" class="muted small"></span></h2>
+    <p id="vp-now" class="vp-now" role="status"></p>
+    <div class="device" id="device">
+      <img id="viewport" alt="Live view of the device viewport">
+      <div id="vp-empty" class="vp-empty">No frames yet</div>
+    </div>
+    <section id="human-panel" class="human-panel" hidden aria-label="Take over the browser">
+      <p class="human-banner"><strong>You have control of the browser.</strong> The agent is waiting. Your actions are recorded as descriptions only (no typed text).<span id="human-headed" hidden> You can also use the browser window directly.</span></p>
+      <p class="small muted">Click the viewport to tap; scroll over it to scroll.</p>
+      <form id="human-form" class="human-form" autocomplete="off">
+        <label class="small" for="human-text">Type into the focused field</label>
+        <div class="human-row">
+          <input id="human-text" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="500">
+          <button type="submit" id="human-type">Type</button>
+        </div>
+        <label class="small"><input type="checkbox" id="human-hide"> Hide what I type on this screen</label>
+      </form>
+      <div class="human-keys" role="group" aria-label="Keys">
+        <button type="button" data-key="Enter">Enter</button>
+        <button type="button" data-key="Tab">Tab</button>
+        <button type="button" data-key="Shift+Tab">Shift+Tab</button>
+        <button type="button" data-key="Escape">Escape</button>
+        <button type="button" data-key="Backspace">Backspace</button>
+        <button type="button" data-key="ArrowUp" aria-label="Arrow up">&uarr;</button>
+        <button type="button" data-key="ArrowDown" aria-label="Arrow down">&darr;</button>
+        <button type="button" data-key="ArrowLeft" aria-label="Arrow left">&larr;</button>
+        <button type="button" data-key="ArrowRight" aria-label="Arrow right">&rarr;</button>
+      </div>
+    </section>
+    <section id="sweep" class="sweep" hidden aria-label="Responsive sweep">
+      <h2>Sweep <span id="sweep-caption" class="muted small"></span></h2>
+      <ul id="sweep-devices" class="sweep-devices"></ul>
+    </section>
+  </section>
+
+  <section class="panel timeline-panel" aria-label="Action timeline">
+    <h2>Timeline <span id="tl-count" class="muted small"></span></h2>
+    <ol id="timeline" class="timeline"></ol>
+    <details class="serverlog">
+      <summary>Server output <span id="log-count" class="muted small"></span></summary>
+      <pre id="serverlog"></pre>
+    </details>
+  </section>
+
+  <section class="panel findings-panel" aria-label="Findings">
+    <h2>Findings</h2>
+    <div id="device-filter" class="chips" role="group" aria-label="Filter findings by device"></div>
+    <div id="confidence-filter" class="chips" role="group" aria-label="Filter findings by confidence" hidden></div>
+    <div id="scenario-filter" class="chips" role="group" aria-label="Filter findings by scenario" hidden></div>
+    <div id="group-row" class="chips" hidden><button id="group-toggle" type="button" aria-pressed="false">Group by problem</button></div>
+    <div id="run-filter" class="run-filter small" hidden></div>
+    <ul id="findings" class="findings"><li class="muted empty">None recorded</li></ul>
+    <details id="suppressed" class="suppressed" hidden>
+      <summary id="suppressed-summary"></summary>
+      <ul id="suppressed-list" class="findings"></ul>
+    </details>
+    <article id="finding-detail" class="finding-detail" hidden></article>
+  </section>
+</main>
+</body>
+</html>

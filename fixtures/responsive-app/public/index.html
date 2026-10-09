@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Shop</title>
+<link rel="stylesheet" href="/styles.css">
+<script src="/common.js" defer></script>
+<script src="/index.js" defer></script>
+</head>
+<body>
+<header class="bar">
+  <h1>Shop</h1>
+  <div class="bar-actions">
+    <button type="button" id="menu-btn" aria-haspopup="true" aria-expanded="false" aria-controls="site-menu">Menu</button>
+    <button type="button" id="filters-btn" aria-haspopup="dialog">Filters</button>
+  </div>
+</header>
+<nav id="site-menu" aria-label="Site" hidden>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/checkout">Checkout</a></li>
+    <li><a href="/account">Account</a></li>
+    <li><a href="/settings">Settings</a></li>
+    <li><a href="/news">News</a></li>
+    <li><a href="/contact">Contact</a></li>
+  </ul>
+</nav>
+<main>
+  <h2>Products</h2>
+  <div class="grid">
+    <div class="card">
+      <div class="thumb" aria-hidden="true"></div>
+      <h3 title="Waterproof trail running shoes with reinforced toe">Waterproof trail running shoes with reinforced toe</h3>
+      <a class="link" href="/about">View details</a>
+    </div>
+    <div class="card">
+      <div class="thumb" aria-hidden="true"></div>
+      <h3 title="Canvas tote bag">Canvas tote bag</h3>
+      <button type="button" class="wish">Add to wishlist and notify me when back in stock</button>
+      <a class="link" href="/about">View details</a>
+    </div>
+    <div class="card">
+      <div class="thumb" aria-hidden="true"></div>
+      <h3 title="Wool beanie">Wool beanie</h3>
+      <div class="reactions">
+        <button type="button" aria-label="Like">&#9829;</button>
+        <button type="button" aria-label="Share">&#8599;</button>
+        <button type="button" aria-label="Save">&#9733;</button>
+      </div>
+      <a class="link" href="/about">View details</a>
+    </div>
+    <div class="card">
+      <div class="thumb" aria-hidden="true"></div>
+      <h3 title="Rain jacket">Rain jacket</h3>
+      <div class="sizes">
+        <button type="button">S</button>
+        <button type="button">M</button>
+        <button type="button">L</button>
+      </div>
+      <p>Not sure? Read the <a href="/about">size guide</a> before you order.</p>
+      <button type="button" class="compare" aria-label="Compare">&#8646;</button>
+      <a class="link" href="/about">View details</a>
+    </div>
+  </div>
+
+  <h2>Featured</h2>
+  <div class="carousel" role="region" aria-label="Featured products" tabindex="0">
+    <button type="button">Feature 1</button>
+    <button type="button">Feature 2</button>
+    <button type="button">Feature 3</button>
+    <button type="button">Feature 4</button>
+    <button type="button">Feature 5</button>
+    <button type="button">Feature 6</button>
+  </div>
+
+  <h2>Deals</h2>
+  <div class="peek">
+    <div class="peek-track" id="peek-track">
+      <div class="slide"><a href="/about">Deal 1</a></div>
+      <div class="slide"><a href="/about">Deal 2</a></div>
+      <div class="slide"><a href="/about">Deal 3</a></div>
+      <div class="slide"><a href="/about">Deal 4</a></div>
+      <div class="slide"><a href="/about">Deal 5</a></div>
+    </div>
+  </div>
+  <div class="peek-nav">
+    <button type="button" id="deal-prev" aria-label="Previous deal">&#8249;</button>
+    <button type="button" id="deal-next" aria-label="Next deal">&#8250;</button>
+  </div>
+
+  <h2>Sizes chart</h2>
+  <div class="table-wrap" style="overflow-x:auto" role="region" aria-label="Sizes chart table" tabindex="0">
+    <table>
+      <thead><tr><th>Size</th><th>Chest</th><th>Waist</th><th>Hips</th></tr></thead>
+      <tbody>
+        <tr><td>S</td><td>88 cm</td><td>72 cm</td><td>92 cm</td></tr>
+        <tr><td>M</td><td>96 cm</td><td>80 cm</td><td>100 cm</td></tr>
+        <tr><td>L</td><td>104 cm</td><td>88 cm</td><td>108 cm</td></tr>
+        <tr><td>XL</td><td>112 cm</td><td>96 cm</td><td>116 cm</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Product info</h2>
+  <div role="tablist" aria-label="Product info" class="tablist">
+    <button type="button" role="tab" id="tab-overview" aria-selected="true" aria-controls="panel-overview" tabindex="0">Overview</button>
+    <button type="button" role="tab" id="tab-specs" aria-selected="false" aria-controls="panel-specs" tabindex="-1">Specs</button>
+    <button type="button" role="tab" id="tab-reviews" aria-selected="false" aria-controls="panel-reviews" tabindex="-1">Reviews</button>
+  </div>
+  <div role="tabpanel" id="panel-overview" class="tabpanel" aria-labelledby="tab-overview">
+    <p>Light, durable and made for everyday use.</p>
+  </div>
+  <div role="tabpanel" id="panel-specs" class="tabpanel" aria-labelledby="tab-specs" hidden>
+    <div class="spec">Battery: 4,500 mAh with 65 W fast charging and wireless charging</div>
+  </div>
+  <div role="tabpanel" id="panel-reviews" class="tabpanel" aria-labelledby="tab-reviews" hidden>
+    <p>Rated 4.6 out of 5 by 212 customers.</p>
+  </div>
+
+  <h2>FAQ</h2>
+  <div class="acc">
+    <h3><button type="button" aria-expanded="false" aria-controls="faq-shipping">Shipping</button></h3>
+    <div class="acc-panel" id="faq-shipping" hidden>Orders ship within two working days. Delivery takes three to five days.</div>
+    <h3><button type="button" aria-expanded="false" aria-controls="faq-returns">Returns</button></h3>
+    <div class="acc-panel" id="faq-returns" hidden>Return unused items within 30 days for a full refund.</div>
+    <h3><button type="button" aria-expanded="false" aria-controls="faq-warranty">Warranty</button></h3>
+    <div class="acc-panel" id="faq-warranty" hidden>Every product has a two year warranty. Keep your receipt.</div>
+  </div>
+</main>
+
+<div class="scrim" id="filters-scrim" hidden></div>
+<div class="drawer" id="filters" role="dialog" aria-modal="true" aria-labelledby="filters-title" tabindex="-1" hidden>
+  <div class="drawer-head">
+    <h2 id="filters-title">Refine results</h2>
+    <button type="button" id="filters-close" aria-label="Close filters">&#10005;</button>
+  </div>
+  <div class="drawer-body">
+    <fieldset>
+      <legend>Category</legend>
+      <div class="chips">
+        <button type="button" aria-pressed="true">All</button>
+        <button type="button" aria-pressed="false">Shoes</button>
+        <button type="button" aria-pressed="false">Bags</button>
+        <button type="button" aria-pressed="false">Hats</button>
+      </div>
+    </fieldset>
+  </div>
+  <div class="drawer-foot">
+    <button type="button" id="filters-reset">Reset</button>
+    <button type="button" id="filters-apply">Show 12 results</button>
+  </div>
+</div>
+</body>
+</html>

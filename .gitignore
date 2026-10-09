@@ -1,0 +1,6 @@
+node_modules
+dist/
+.agentlab/
+
+# Output of npm run verify:package and scripts/verify-docker.mjs
+verify-results/

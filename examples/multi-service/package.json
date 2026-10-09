@@ -1,0 +1,11 @@
+{
+  "name": "multi-service-example",
+  "private": true,
+  "type": "module",
+  "description": "Task tracker made of an API, a worker and a web front end, used to test multi-service startup, reuse, failure and shutdown.",
+  "scripts": {
+    "api": "node api/server.mjs",
+    "worker": "node worker/worker.mjs",
+    "web": "node web/server.mjs"
+  }
+}

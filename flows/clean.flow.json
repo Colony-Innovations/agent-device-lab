@@ -1,0 +1,112 @@
+{
+  "name": "clean invoice flow (mobile-390)",
+  "description": "Create an invoice, open it and mark it paid. Exercises dialog, validation, async save, toast, navigation reset and disabled state. Expects no layout flags.",
+  "project": "../fixtures/invoice-app",
+  "device": "mobile-390",
+  "steps": [
+    {
+      "label": "app UI reached on a fresh run",
+      "expect": {
+        "route": "/invoices",
+        "heading": "Invoices",
+        "dialog": null,
+        "layout": "clean",
+        "control": {
+          "role": "button",
+          "name": "New invoice"
+        }
+      }
+    },
+    {
+      "do": "click",
+      "role": "button",
+      "name": "New invoice",
+      "expect": {
+        "dialog": "Create invoice",
+        "control": {
+          "role": "textbox",
+          "name": "Customer"
+        }
+      }
+    },
+    {
+      "do": "click",
+      "role": "button",
+      "name": "Save",
+      "label": "submit empty form (validation)",
+      "expect": {
+        "message": "Customer is required",
+        "control": {
+          "role": "textbox",
+          "name": "Customer",
+          "invalid": true
+        }
+      }
+    },
+    {
+      "do": "fill",
+      "role": "textbox",
+      "name": "Customer",
+      "value": "Acme Ltd"
+    },
+    {
+      "do": "fill",
+      "role": "textbox",
+      "name": "Amount",
+      "value": "120"
+    },
+    {
+      "do": "click",
+      "role": "button",
+      "name": "Save",
+      "expect": {
+        "dialog": null,
+        "message": "Invoice INV-003 created",
+        "control": {
+          "role": "link",
+          "nameContains": "INV-003 Acme Ltd"
+        },
+        "layout": "clean"
+      }
+    },
+    {
+      "do": "click",
+      "role": "link",
+      "nameContains": "INV-003",
+      "expect": {
+        "navigated": true,
+        "route": "/invoices/INV-003",
+        "heading": "INV-003",
+        "layout": "clean"
+      }
+    },
+    {
+      "do": "click",
+      "role": "button",
+      "name": "Mark as paid",
+      "expect": {
+        "message": "INV-003 marked as paid",
+        "control": {
+          "role": "button",
+          "name": "Mark as paid",
+          "disabled": true
+        },
+        "layout": "clean"
+      }
+    },
+    {
+      "do": "click",
+      "role": "link",
+      "name": "Back to invoices",
+      "expect": {
+        "navigated": true,
+        "route": "/invoices",
+        "control": {
+          "role": "link",
+          "nameContains": "INV-003 Acme Ltd · $120.00 · Paid"
+        },
+        "findings": "none"
+      }
+    }
+  ]
+}

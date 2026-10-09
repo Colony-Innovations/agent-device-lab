@@ -1,0 +1,7 @@
+# Optional cache used by compose.agentlab.json. Nothing in the app talks to it; it exists to
+# exercise a oneshot `docker compose up -d` service with TCP readiness.
+services:
+  cache:
+    image: redis:7-alpine
+    ports:
+      - "127.0.0.1:5349:6379"

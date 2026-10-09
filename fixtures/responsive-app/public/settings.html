@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Settings</title>
+<link rel="stylesheet" href="/styles.css">
+<script src="/common.js" defer></script>
+<script src="/settings.js" defer></script>
+</head>
+<body>
+<nav class="subnav" aria-label="Site"><a class="link" href="/">Home</a></nav>
+<main>
+  <h1>Settings</h1>
+
+  <div class="section">
+    <button type="button" id="actions-btn" aria-haspopup="menu" aria-expanded="false">Account actions</button>
+    <div class="menu" role="menu" id="actions-menu" aria-label="Account actions" hidden>
+      <button type="button" role="menuitem" data-audit="rename">Rename</button>
+      <button type="button" role="menuitem" data-audit="delete-account">Delete account</button>
+      <button type="button" role="menuitem" data-audit="logout">Log out</button>
+    </div>
+  </div>
+
+  <div class="section actions">
+    <button type="button" id="delete-workspace" aria-haspopup="dialog">Delete workspace</button>
+    <button type="button" id="cancel-booking" aria-haspopup="dialog">Cancel booking</button>
+  </div>
+
+  <form class="section settings-form" id="settings-form" action="/settings" method="post">
+    <div class="field">
+      <label for="s-email">Email</label>
+      <input id="s-email" name="email" type="email" autocomplete="off">
+    </div>
+    <div class="actions">
+      <button aria-expanded="false" id="apply">Apply changes</button>
+      <button type="button" aria-expanded="false" aria-controls="adv" id="adv-btn">Advanced options</button>
+    </div>
+    <div id="adv" class="panel note" hidden>Advanced options only change how results are sorted.</div>
+  </form>
+
+  <div class="section">
+    <a class="link" href="https://example.com/help" aria-haspopup="true" rel="noopener">Help centre</a>
+  </div>
+
+  <div class="section">
+    <button type="button" id="upload-avatar">Upload avatar</button>
+    <input type="file" id="avatar-file" class="visually-hidden" tabindex="-1" aria-label="Avatar file">
+  </div>
+
+  <div class="section">
+    <button type="button" id="more">More</button>
+    <p id="more-text" class="panel" hidden>More settings are coming soon.</p>
+  </div>
+
+  <div class="section">
+    <button type="button" id="remove-card" aria-expanded="false">Remove card</button>
+  </div>
+
+  <div class="section">
+    <button type="button" id="notif-btn" aria-expanded="false" aria-controls="notif">Notifications</button>
+    <div id="notif" class="panel" hidden>
+      <label class="inline"><input type="checkbox"> Order updates</label>
+      <label class="inline"><input type="checkbox"> Weekly digest</label>
+    </div>
+  </div>
+</main>
+<div class="scrim" id="confirm-scrim" hidden></div>
+<div class="modal confirm" id="confirm" role="dialog" aria-modal="true" aria-labelledby="confirm-title" tabindex="-1" hidden>
+  <h2 id="confirm-title">Are you sure?</h2>
+  <p id="confirm-text"></p>
+  <button type="button" id="confirm-close">Keep it</button>
+</div>
+</body>
+</html>

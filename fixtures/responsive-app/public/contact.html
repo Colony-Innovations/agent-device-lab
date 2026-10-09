@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contact</title>
+<link rel="stylesheet" href="/styles.css">
+<script src="/common.js" defer></script>
+<script src="/contact.js" defer></script>
+</head>
+<body>
+<nav class="subnav" aria-label="Site"><a class="link" href="/">Home</a></nav>
+<main>
+  <h1>Contact</h1>
+  <form id="contact-form" novalidate>
+    <div class="field"><label for="c-name">Name</label><input id="c-name" name="name" type="text" autocomplete="off"></div>
+    <div class="field" id="email-field"><label for="c-email">Email</label><input id="c-email" name="email" type="email" autocomplete="off"></div>
+    <div class="field"><label for="c-message">Message</label><textarea id="c-message" name="message"></textarea></div>
+    <button type="submit">Send message</button>
+  </form>
+</main>
+</body>
+</html>

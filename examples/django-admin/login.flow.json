@@ -1,0 +1,72 @@
+{
+  "name": "django admin: sign in and add a group (mobile-390)",
+  "description": "Signs in as labadmin, adds the group \"Lab reviewers\" and expects the new group in the list (Django's success message is a plain <ul class=messagelist> with no ARIA role or live region, so the lab's `message` expectation cannot see it). A flow step value is a literal, so prepare.sh writes the disposable password into the scratch copy of this file (git-ignored, mode 0600); the committed template holds a placeholder. Run the copy in the scratch directory, not this template.",
+  "project": ".",
+  "device": "mobile-390",
+  "steps": [
+    {
+      "label": "signed-out visit lands on the login form",
+      "expect": {
+        "control": {
+          "role": "button",
+          "name": "Log in"
+        }
+      }
+    },
+    {
+      "do": "fill",
+      "role": "textbox",
+      "name": "Username:",
+      "value": "labadmin"
+    },
+    {
+      "do": "fill",
+      "role": "textbox",
+      "name": "Password:",
+      "value": "@ADMIN_PASSWORD@"
+    },
+    {
+      "do": "click",
+      "role": "button",
+      "name": "Log in",
+      "expect": {
+        "route": "/admin/",
+        "heading": "Site administration"
+      }
+    },
+    {
+      "do": "click",
+      "role": "link",
+      "name": "Groups",
+      "expect": {
+        "route": "/admin/auth/group/"
+      }
+    },
+    {
+      "do": "click",
+      "role": "link",
+      "nameContains": "ADD GROUP",
+      "expect": {
+        "route": "/admin/auth/group/add/"
+      }
+    },
+    {
+      "do": "fill",
+      "role": "textbox",
+      "name": "Name:",
+      "value": "Lab reviewers"
+    },
+    {
+      "do": "click",
+      "role": "button",
+      "name": "Save",
+      "expect": {
+        "route": "/admin/auth/group/",
+        "control": {
+          "role": "checkbox",
+          "nameContains": "Lab reviewers"
+        }
+      }
+    }
+  ]
+}

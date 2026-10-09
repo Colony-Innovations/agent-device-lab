@@ -1,0 +1,23 @@
+{
+  "name": "nextjs starter home page (mobile-390)",
+  "description": "Loads / and checks the four starter cards. Run the copy in the scratch directory (prepare.sh copies it there; \"project\" is relative to the flow file).",
+  "project": ".",
+  "device": "mobile-390",
+  "steps": [
+    {
+      "label": "home page rendered",
+      "expect": {
+        "route": "/",
+        "heading": "Docs ->",
+        "control": { "role": "link", "nameContains": "Docs" }
+      }
+    },
+    {
+      "label": "the other starter cards are present",
+      "expect": {
+        "heading": "Deploy ->",
+        "control": { "role": "link", "nameContains": "Templates" }
+      }
+    }
+  ]
+}

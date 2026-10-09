@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scroll and swipe · Interaction fixture</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <nav aria-label="Main"><a href="/">Home</a></nav>
+  </header>
+  <main>
+    <h1>Scroll and swipe</h1>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+    <h2>Photos</h2>
+    <div class="carousel" id="carousel" role="region" aria-label="Photos">
+      <div class="slide"><button type="button">Photo 1</button></div>
+      <div class="slide"><button type="button">Photo 2</button></div>
+      <div class="slide"><button type="button">Photo 3</button></div>
+      <div class="slide"><button type="button">Photo 4</button></div>
+      <div class="slide"><button type="button">Photo 5</button></div>
+    </div>
+    <h2>Swipe</h2>
+    <div class="swipe-card" id="swipe-card" role="group" aria-label="Swipe card"><button type="button">Card</button></div>
+    <h2>Items</h2>
+    <ul class="items" id="items" aria-label="Items"></ul>
+    <div class="sentinel" id="sentinel"></div>
+    <div class="filler"></div>
+    <p><button type="button" id="top">Back to top</button></p>
+    <script src="/scroll.js"></script>
+  </main>
+</body>
+</html>

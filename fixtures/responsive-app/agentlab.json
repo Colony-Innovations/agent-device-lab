@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 2,
+  "name": "responsive-fixture",
+  "services": {
+    "web": {
+      "command": "npm run dev",
+      "url": "http://127.0.0.1:5353",
+      "env": { "PORT": "5353" },
+      "readiness": { "path": "/health", "timeoutMs": 30000 }
+    }
+  },
+  "startPath": "/",
+  "device": "mobile-390",
+  "scan": {
+    "devices": ["mobile-320", "mobile-390", "tablet-768", "desktop-1440"],
+    "tapTargets": { "standard": "wcag22-aa" },
+    "explore": {
+      "enabled": false,
+      "maxDepth": 2,
+      "maxStates": 12,
+      "maxActionsPerState": 8,
+      "maxMs": 180000,
+      "deny": [{ "role": "button", "name": "Chat with us" }]
+    },
+    "scenarios": [
+      { "name": "Home as loaded", "route": "/" },
+      {
+        "name": "Filters drawer",
+        "route": "/",
+        "steps": [{ "do": "click", "role": "button", "name": "Filters", "expect": { "dialog": "Refine results" } }]
+      },
+      {
+        "name": "Mobile menu",
+        "route": "/",
+        "devices": ["mobile-320", "mobile-390"],
+        "steps": [{ "do": "click", "role": "button", "name": "Menu", "expect": { "control": { "role": "link", "name": "Settings" } } }]
+      },
+      { "name": "Specs tab", "route": "/", "steps": [{ "do": "click", "role": "tab", "name": "Specs" }] },
+      { "name": "FAQ expanded", "route": "/", "steps": [{ "do": "click", "role": "button", "name": "Returns" }] },
+      {
+        "name": "Edit profile dialog",
+        "route": "/account",
+        "steps": [{ "do": "click", "role": "button", "name": "Edit profile", "expect": { "dialog": "Edit profile" } }]
+      },
+      { "name": "Checkout", "route": "/checkout" },
+      {
+        "name": "Contact form with an error",
+        "route": "/contact",
+        "steps": [
+          { "do": "fill", "role": "textbox", "name": "Name", "value": "Ada" },
+          { "do": "fill", "role": "textbox", "name": "Email", "value": "not-an-email" },
+          { "do": "press", "key": "Tab", "expect": { "message": "Enter a valid email address." } }
+        ]
+      },
+      { "name": "About (clean)", "route": "/about" },
+      { "name": "News", "route": "/news" }
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Form controls · Interaction fixture</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <nav aria-label="Main"><a href="/">Home</a></nav>
+  </header>
+  <main>
+    <h1>Form controls</h1>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+    <h2 id="step2" hidden>Step 2</h2>
+    <label for="plan">Plan</label>
+    <select id="plan">
+      <option value="free" selected>Free</option>
+      <option value="pro">Pro</option>
+      <option value="team">Team</option>
+    </select>
+    <label class="inline"><input type="checkbox" id="updates">Email me updates</label>
+    <fieldset>
+      <legend>Size</legend>
+      <label class="inline"><input type="radio" name="size" value="Small">Small</label>
+      <label class="inline"><input type="radio" name="size" value="Medium" checked>Medium</label>
+      <label class="inline"><input type="radio" name="size" value="Large">Large</label>
+    </fieldset>
+    <div class="switch" id="dark" role="switch" tabindex="0" aria-checked="false" aria-label="Dark mode">Dark mode</div>
+    <label class="inline"><input type="checkbox" id="locked" disabled>Locked option</label>
+    <p><button type="button" id="next">Next step</button></p>
+    <script src="/form.js"></script>
+  </main>
+</body>
+</html>

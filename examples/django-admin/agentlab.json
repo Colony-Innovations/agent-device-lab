@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "name": "django-admin (learning_log)",
+  "services": {
+    "web": {
+      "command": "@PYTHON@ manage.py runserver 127.0.0.1:5381 --noreload",
+      "cwd": ".",
+      "url": "http://127.0.0.1:5381",
+      "readiness": {
+        "path": "/admin/login/",
+        "status": 200,
+        "timeoutMs": 60000
+      },
+      "reuseExisting": false
+    }
+  },
+  "app": {
+    "service": "web"
+  },
+  "startPath": "/admin/",
+  "device": "mobile-390",
+  "auth": {
+    "loginPath": "/admin/login/"
+  },
+  "scan": {
+    "devices": [
+      "mobile-320",
+      "mobile-390",
+      "tablet-768",
+      "desktop-1440"
+    ],
+    "scenarios": [
+      {
+        "name": "Login page",
+        "route": "/admin/login/",
+        "auth": "fresh"
+      },
+      {
+        "name": "Add group, empty (validation error)",
+        "route": "/admin/auth/group/add/",
+        "steps": [
+          {
+            "do": "click",
+            "role": "button",
+            "name": "Save",
+            "expect": {
+              "control": {
+                "role": "textbox",
+                "name": "Name:",
+                "invalid": true
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

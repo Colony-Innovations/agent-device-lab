@@ -1,0 +1,10 @@
+Agent Device Lab
+Copyright 2026 Colony Innovations
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+It depends on, and does not include, the following software, installed by npm
+under their own licences:
+
+  Playwright (Apache-2.0), Copyright (c) Microsoft Corporation
+  Model Context Protocol TypeScript SDK (MIT), Copyright (c) Anthropic, PBC

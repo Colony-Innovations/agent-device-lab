@@ -1,0 +1,10 @@
+{
+  "name": "invoice-fixture",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Independent demo app used to exercise Agent Device Lab. Zero dependencies.",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs"
+  }
+}

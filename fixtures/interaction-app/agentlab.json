@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 2,
+  "name": "interaction-fixture",
+  "services": {
+    "web": {
+      "command": "npm run dev",
+      "url": "http://127.0.0.1:5351",
+      "env": { "PORT": "5351" },
+      "readiness": { "path": "/health", "timeoutMs": 30000 }
+    }
+  },
+  "startPath": "/",
+  "device": "mobile-390",
+  "uploads": { "allow": ["uploads"] }
+}

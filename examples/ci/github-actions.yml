@@ -1,0 +1,61 @@
+# Agent Device Lab in GitHub Actions. agentlab itself is provider-neutral: this file only wires the
+# command, its secrets and its artifacts. The exit code of `agentlab test` gates the job:
+#   0 pass, 1 policy failed, 2 could not run, 3 timed out (see docs/ci.md).
+#
+# Installing agentlab: the job installs one exact version, never `latest` or a dist-tag such as `next`,
+# so the version changes only in a reviewed commit. A pipeline that may not reach the npm registry can
+# install a committed tarball checked against a pinned SHA-256 instead (see docs/ci.md).
+name: agentlab
+
+env:
+  AGENTLAB_VERSION: 0.3.0
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  responsive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install agentlab
+        run: npm install --no-save --no-fund --no-audit "agent-device-lab@${AGENTLAB_VERSION}"
+
+      # Chromium and the system libraries it needs on a bare runner.
+      - run: npx agentlab install-browser --with-deps
+
+      # Fail fast on a broken profile, a missing variable or an unknown scenario, before anything starts.
+      - run: npx agentlab test --validate-only
+        env:
+          DEMO_API_TOKEN: ${{ secrets.DEMO_API_TOKEN }}
+          AGENTLAB_AUTH_STATE: ${{ secrets.AGENTLAB_AUTH_STATE }}
+
+      # Runs what agentlab.json "ci" selects (flows, routes to sweep, scenarios to scan). A step that exits
+      # non-zero fails the job, so this is the gate. The sign-in state comes from a secret, in memory only.
+      - name: agentlab test
+        run: npx agentlab test --out agentlab-results --trace on-failure --timeout 20m
+        env:
+          DEMO_API_TOKEN: ${{ secrets.DEMO_API_TOKEN }}
+          AGENTLAB_AUTH_STATE: ${{ secrets.AGENTLAB_AUTH_STATE }}
+
+      # Always keep the report, the JUnit file, evidence frames and failure bundles, also when the gate failed.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: agentlab-results
+          path: agentlab-results/
+          if-no-files-found: warn
+          retention-days: 14
+
+      # Optional: publish the JUnit file in the job summary with any JUnit reporter action.

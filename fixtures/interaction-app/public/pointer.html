@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pointer · Interaction fixture</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <nav aria-label="Main"><a href="/">Home</a></nav>
+  </header>
+  <main>
+    <h1>Pointer</h1>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+    <h2>Tooltip</h2>
+    <div class="tooltip-wrap">
+      <button type="button" id="info" aria-describedby="tip">Info</button>
+      <div class="tooltip" id="tip" role="tooltip" hidden>More details</div>
+    </div>
+    <h2>Tasks</h2>
+    <ul class="tasks" id="tasks" aria-label="Tasks">
+      <li><button type="button" draggable="true" data-task="A">Task A</button></li>
+      <li><button type="button" draggable="true" data-task="B">Task B</button></li>
+      <li><button type="button" draggable="true" data-task="C">Task C</button></li>
+    </ul>
+    <h2>Volume</h2>
+    <div class="slider" id="volume" role="slider" aria-label="Volume" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0"><span class="thumb" style="left: 50%"></span></div>
+    <script src="/pointer.js"></script>
+  </main>
+</body>
+</html>

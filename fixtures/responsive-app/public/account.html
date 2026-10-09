@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Account</title>
+<link rel="stylesheet" href="/styles.css">
+<script src="/common.js" defer></script>
+<script src="/account.js" defer></script>
+</head>
+<body>
+<nav class="subnav" aria-label="Site"><a class="link" href="/">Home</a></nav>
+<main>
+  <h1>Account</h1>
+  <p>Signed in as demo@example.com.</p>
+  <button type="button" id="edit-profile" aria-haspopup="dialog">Edit profile</button>
+</main>
+<div class="scrim" id="profile-scrim" hidden></div>
+<div class="modal" id="profile" role="dialog" aria-modal="true" aria-labelledby="profile-title" tabindex="-1" hidden>
+  <h2 id="profile-title">Edit profile</h2>
+  <p>These details appear on your public profile and on your receipts.</p>
+  <form id="profile-form">
+    <div class="field"><label for="p-first">First name</label><input id="p-first" name="first" type="text" autocomplete="off"></div>
+    <div class="field"><label for="p-last">Last name</label><input id="p-last" name="last" type="text" autocomplete="off"></div>
+    <div class="field"><label for="p-street">Street</label><input id="p-street" name="street" type="text" autocomplete="off"></div>
+    <div class="field"><label for="p-city">City</label><input id="p-city" name="city" type="text" autocomplete="off"></div>
+    <div class="field"><label for="p-region">Region</label><input id="p-region" name="region" type="text" autocomplete="off"></div>
+    <div class="field"><label for="p-postal">Postal code</label><input id="p-postal" name="postal" type="text" autocomplete="off"></div>
+    <div class="field"><label for="p-phone">Phone</label><input id="p-phone" name="phone" type="text" autocomplete="off"></div>
+    <div class="field"><label for="p-company">Company</label><input id="p-company" name="company" type="text" autocomplete="off"></div>
+    <div class="modal-foot">
+      <button type="button" id="profile-cancel">Cancel</button>
+      <button type="submit" id="profile-save">Save changes</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>

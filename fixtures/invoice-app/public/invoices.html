@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Invoices · Fixture</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body data-page="invoices">
+  <header class="topbar">
+    <nav aria-label="Main">
+      <a href="/invoices" aria-current="page">Invoices</a>
+      <a href="/reports">Reports</a>
+    </nav>
+  </header>
+  <main>
+    <h1>Invoices</h1>
+    <button type="button" id="new-invoice" class="primary">New invoice</button>
+    <ul id="invoice-list" class="invoice-list"></ul>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <dialog id="create-dialog" aria-labelledby="dialog-title">
+      <form id="create-form" novalidate>
+        <h2 id="dialog-title">Create invoice</h2>
+        <label for="customer">Customer</label>
+        <input id="customer" name="customer" autocomplete="off" required>
+        <label for="amount">Amount</label>
+        <input id="amount" name="amount" inputmode="decimal" autocomplete="off" required>
+        <p id="form-error" class="form-error" role="alert"></p>
+        <div class="dialog-actions">
+          <button type="button" id="cancel">Cancel</button>
+          <button type="submit" id="save" class="primary">Save</button>
+        </div>
+      </form>
+    </dialog>
+  </main>
+</body>
+</html>
