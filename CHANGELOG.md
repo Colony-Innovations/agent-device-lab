@@ -4,7 +4,13 @@ All notable changes to Agent Device Lab are recorded here. The format follows [K
 
 Contract versions (profile, results, MCP tools, report, bundle, events) are listed by `agentlab version`; a change to one is called out here. See [docs/compatibility.md](docs/compatibility.md).
 
-## [Unreleased]
+## [0.3.1] - 2026-10-09
+
+Documentation and package metadata only; the code is the same as 0.3.0.
+
+### Changed
+
+- The description says what the lab already does: it works at phone, tablet and desktop size (`mobile-320`, `mobile-390`, `tablet-768`, `desktop-1440`), not only on a phone-sized screen.
 
 ### Added
 

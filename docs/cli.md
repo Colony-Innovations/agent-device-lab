@@ -1,6 +1,6 @@
 # Command-line reference
 
-Every command and flag of `agentlab`, as of Web V1 (0.3.0). `agentlab help` prints the same list in short form. Install first ([install.md](install.md)); describe your project in [configuration.md](configuration.md).
+Every command and flag of `agentlab`, as of Web V1 (0.3.x). `agentlab help` prints the same list in short form. Install first ([install.md](install.md)); describe your project in [configuration.md](configuration.md).
 
 ## Conventions
 

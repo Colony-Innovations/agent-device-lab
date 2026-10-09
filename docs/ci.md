@@ -7,7 +7,7 @@
 Pin one exact version:
 
 ```bash
-npm install --no-save --no-fund --no-audit agent-device-lab@0.3.0
+npm install --no-save --no-fund --no-audit agent-device-lab@0.3.1
 npx agentlab install-browser --with-deps
 ```
 
@@ -16,8 +16,8 @@ Never `latest`, a range, or a dist-tag such as `next`: the profile, result and r
 A pipeline that may not reach the npm registry can instead commit a reviewed tarball (`npm pack` output), pin its SHA-256 next to it, and refuse anything else:
 
 ```bash
-echo "$AGENTLAB_SHA256  vendor/agent-device-lab-0.3.0.tgz" | sha256sum --check --strict -
-npm install --no-save --no-fund --no-audit ./vendor/agent-device-lab-0.3.0.tgz
+echo "$AGENTLAB_SHA256  vendor/agent-device-lab-0.3.1.tgz" | sha256sum --check --strict -
+npm install --no-save --no-fund --no-audit ./vendor/agent-device-lab-0.3.1.tgz
 ```
 
 ## Commands

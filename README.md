@@ -1,17 +1,17 @@
 # Agent Device Lab
 
-Agent Device Lab lets a coding agent start your web app, use it on a phone-sized screen, and report what breaks, while you watch.
+Agent Device Lab lets a coding agent start your web app, use it at phone, tablet or desktop size, and report what breaks, while you watch.
 
 - **It runs your project.** The lab starts the services your app needs, in order, or attaches to ones already running. When it finishes it stops only what it started.
 - **It gives the agent a small, exact view.** The agent gets a short list of the controls on screen, each with a ref (`e1`, `e2`, ...). After every click or keystroke it gets only what changed.
-- **It finds layout defects.** It records problems a person would hit on a small screen, such as a button pushed off the edge, each with measurements and the steps to reproduce it.
+- **It finds layout defects.** It records problems a person would hit at each screen size, such as a button pushed off the edge on a phone, each with measurements and the steps to reproduce it.
 - **You stay in charge.** A local dashboard shows the agent's screen live. You can pause the agent, take over the browser, hand it back, or stop the run.
 
 The same commands work from a terminal (`agentlab`), from an MCP server for Claude Code and Codex, and in CI with predictable exit codes.
 
 ![The dashboard after a run on the demo app: the live viewport in the centre, the timeline of actions on the left, and the findings on the right with one selected to show its evidence and reproduction steps](docs/images/dashboard.png)
 
-**Status:** Web V1 (`0.3.0`). It is tested on Linux x64 (Debian 12 and Ubuntu 24.04) with Node.js 22 and 24. macOS, Windows and arm64 are untested, and Alpine does not work. See [Limitations](#limitations).
+**Status:** Web V1 (`0.3.1`). It is tested on Linux x64 (Debian 12 and Ubuntu 24.04) with Node.js 22 and 24. macOS, Windows and arm64 are untested, and Alpine does not work. See [Limitations](#limitations).
 
 ## Install
 
@@ -43,7 +43,7 @@ In your own project the short version is:
 cd /path/to/your-app
 
 agentlab init          # shows what it detected and the agentlab.json it proposes; writes nothing until you confirm
-agentlab start         # starts your app, opens a phone-sized browser, prints the first observation
+agentlab start         # starts your app, opens a browser at the size in your profile (phone by default), prints the first observation
 agentlab ui            # opens the dashboard so you can watch
 
 agentlab observe       # the controls on screen, with refs
@@ -68,6 +68,8 @@ The lab reads one file in your project, `agentlab.json`. A minimal one:
   "device": "mobile-390"
 }
 ```
+
+`device` sets the screen the agent uses: `mobile-320`, `mobile-390`, `tablet-768` or `desktop-1440`. Everything works the same way at each size.
 
 The lab runs only the commands written there, so committing the file is how you approve them. Every setting is in [docs/configuration.md](docs/configuration.md).
 

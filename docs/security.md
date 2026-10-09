@@ -1,6 +1,6 @@
 # Security
 
-What Agent Device Lab protects, from whom, how, and where the protection stops. This page describes Web V1 (0.3.0). It is written to be checked: each control names the code or test that holds it.
+What Agent Device Lab protects, from whom, how, and where the protection stops. This page describes Web V1 (0.3.x). It is written to be checked: each control names the code or test that holds it.
 
 ## What it is, and what it is not
 
