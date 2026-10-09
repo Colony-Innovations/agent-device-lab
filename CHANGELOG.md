@@ -4,7 +4,17 @@ All notable changes to Agent Device Lab are recorded here. The format follows [K
 
 Contract versions (profile, results, MCP tools, report, bundle, events) are listed by `agentlab version`; a change to one is called out here. See [docs/compatibility.md](docs/compatibility.md).
 
-## [Unreleased]
+## [0.3.1] - 2026-10-09
+
+A dependency update, documentation and package metadata; the lab's own code is the same as 0.3.0.
+
+### Security
+
+- `@modelcontextprotocol/sdk` is updated from 1.30.1 to 1.32.1 for advisory GHSA-6qxp-vccf-f47h (the SDK's OAuth client could send credentials to an authorization server chosen by an MCP server; fixed in 1.31.0). The lab uses only the SDK's stdio server and never its OAuth client, so it was not exposed, but an install no longer carries the affected version.
+
+### Changed
+
+- The description says what the lab already does: it works at phone, tablet and desktop size (`mobile-320`, `mobile-390`, `tablet-768`, `desktop-1440`), not only on a phone-sized screen.
 
 ### Added
 
