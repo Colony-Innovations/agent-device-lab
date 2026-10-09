@@ -19,7 +19,7 @@ What Agent Device Lab Web V1 was run on, which versions of its dependencies it n
 | --- | --- | --- |
 | Playwright | 1.63.0 | An exact version in `dependencies` (no range). |
 | Chromium | 153.0.8010.12 (build `chromium-1243`; the headless shell is `chromium_headless_shell-1243` and ffmpeg `ffmpeg-1011`) | Whatever Playwright 1.63.0 expects. `agentlab install-browser` runs the Playwright CLI that ships inside the package, so the build always matches. |
-| MCP SDK (`@modelcontextprotocol/sdk`) | 1.30.1 | An exact version in `dependencies`. |
+| MCP SDK (`@modelcontextprotocol/sdk`) | 1.32.1 | An exact version in `dependencies`. |
 | Node.js | 22 or newer | `"engines": {"node": ">=22"}` and the gate above. |
 
 ### Install matrix (2026-09-30, root in containers)
@@ -100,4 +100,4 @@ Playwright is the lab's one large dependency, and the lab uses parts of it that 
 7. Update the Playwright image tag in CI examples (`mcr.microsoft.com/playwright:v1.63.0-noble` in [ci.md](ci.md)).
 8. Record the new versions here and in the changelog, and say in the release notes that users must run `agentlab install-browser` after upgrading.
 
-The same applies to the MCP SDK (pinned exactly, `1.30.1`): run `test/mcp.test.mjs`, `test/mcp-actions.test.mjs` and `test/mcp-supervision.test.mjs`, and check that `claude mcp get` still reports `Connected`.
+The same applies to the MCP SDK (pinned exactly, `1.32.1`): run `test/mcp.test.mjs`, `test/mcp-actions.test.mjs` and `test/mcp-supervision.test.mjs`, and check that `claude mcp get` still reports `Connected`.

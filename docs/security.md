@@ -127,7 +127,7 @@ Details of the refusals: [architecture.md](architecture.md#supervision), [mcp.md
 
 ### Dependencies
 
-`npm audit` reported **0 vulnerabilities** on 2026-09-30, for production and development dependencies. The package has two runtime dependencies, both pinned to an exact version: `playwright` 1.63.0 and `@modelcontextprotocol/sdk` 1.30.1. The package ships only `bin/`, the compiled `dist/**/*.js`, the dashboard assets and the README. See [compatibility.md](compatibility.md#playwright-upgrade-strategy) for how a Playwright upgrade is handled.
+`npm audit` reported **0 vulnerabilities** on 2026-10-09, for production and development dependencies. The package has two runtime dependencies, both pinned to an exact version: `playwright` 1.63.0 and `@modelcontextprotocol/sdk` 1.32.1. The package ships only `bin/`, the compiled `dist/**/*.js`, the dashboard assets and the README. See [compatibility.md](compatibility.md#playwright-upgrade-strategy) for how a Playwright upgrade is handled.
 
 ## Operating it safely
 
