@@ -24,6 +24,10 @@
   "bugs": {
     "url": "https://github.com/Colony-Innovations/agent-device-lab/issues"
   },
+  "funding": {
+    "type": "patreon",
+    "url": "https://www.patreon.com/Ikafa"
+  },
   "type": "module",
   "bin": {
     "agentlab": "bin/agentlab.js"

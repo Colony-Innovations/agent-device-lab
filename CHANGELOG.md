@@ -4,6 +4,12 @@ All notable changes to Agent Device Lab are recorded here. The format follows [K
 
 Contract versions (profile, results, MCP tools, report, bundle, events) are listed by `agentlab version`; a change to one is called out here. See [docs/compatibility.md](docs/compatibility.md).
 
+## [Unreleased]
+
+### Added
+
+- A "Support development" section in the README and a `funding` entry in `package.json`, pointing to Patreon. Support is optional.
+
 ## [0.3.0] - 2026-10-09: Web V1
 
 Web V1 is three milestones on top of the first slices: an installable package for ordinary Linux web projects (milestone 1), stateful responsive scans (milestone 2), and supervision, CI mode, failure bundles, versioned contracts and hardening (milestone 3). Scans are described in [docs/web-v1-m2.md](docs/web-v1-m2.md) and the structure in [docs/architecture.md](docs/architecture.md). Release notes: [docs/release-notes-web-v1.md](docs/release-notes-web-v1.md).
