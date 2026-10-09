@@ -138,6 +138,12 @@ Measurements of the lab, including a benchmark against Playwright MCP and runs o
 
 Building, testing and the project's rules are in [CONTRIBUTING.md](CONTRIBUTING.md). Report a security issue privately as described in [SECURITY.md](SECURITY.md), not in a public issue. Changes by release are in [CHANGELOG.md](CHANGELOG.md).
 
+## Support development
+
+If Agent Device Lab is useful to you, you can support its ongoing development
+for $2/month on [Patreon](https://www.patreon.com/Ikafa).
+Support is completely optional.
+
 ## Licence
 
 Apache License 2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE). Copyright 2026 Colony Innovations.
