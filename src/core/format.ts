@@ -15,6 +15,7 @@ export function formatControl(c: Control): string {
   if (c.value !== undefined && c.value !== '') parts.push(`value=${q(c.value)}`);
   if (c.checked !== undefined) parts.push(c.checked ? 'checked' : 'unchecked');
   if (c.pressed !== undefined) parts.push(c.pressed ? 'pressed' : 'not-pressed');
+  if (c.selected !== undefined) parts.push(c.selected ? 'selected' : 'not-selected');
   if (c.expanded !== undefined) parts.push(c.expanded ? 'expanded' : 'collapsed');
   for (const flag of ['disabled', 'required', 'invalid', 'focused'] as const) if (c[flag]) parts.push(flag);
   if (c.offscreen) parts.push(`offscreen-${c.offscreen}`);
@@ -86,6 +87,7 @@ export function formatChanges(c: Changes): string[] {
     if (c.tabs.active) items.push(`active tab ${c.tabs.active.from} → ${c.tabs.active.to}`);
   }
   if (c.route) items.push(`route ${c.route.from} → ${c.route.to}`);
+  if (c.title) items.push(`title ${q(c.title.from)} → ${q(c.title.to)}`);
   if (c.dialog) {
     if (c.dialog.to !== undefined && c.dialog.from === undefined) items.push(`+ dialog ${q(c.dialog.to)}`);
     else if (c.dialog.to === undefined) items.push(`- dialog ${q(c.dialog.from ?? '')}`);
@@ -109,7 +111,7 @@ export function formatChanges(c: Changes): string[] {
   for (const f of c.layoutResolved) items.push(`- layout ${f.kind} resolved`);
   if (items.length > MAX_CHANGE_ITEMS) {
     const rest = items.length - MAX_CHANGE_ITEMS;
-    return [...items.slice(0, MAX_CHANGE_ITEMS), `… ${rest} more (use --json for all)`];
+    return [...items.slice(0, MAX_CHANGE_ITEMS), `… ${rest} more changes (observe for current state; CLI --json for all changes)`];
   }
   return items;
 }
@@ -118,7 +120,7 @@ export function formatAction(r: ActionResult): string {
   const target = r.target ? ` ${r.target.role} ${q(r.target.name)}` : '';
   const head = `${r.action}${r.ref ? ` ${r.ref}` : ''}${target}`;
   if (r.outcome === 'error') {
-    return [`${head} → ERROR ${formatError(r.error!)}`, ...r.notes.map((n) => `note: ${n}`)].join('\n');
+    return [`${head} → ERROR ${formatError(r.error!)}`, ...r.notes.map((n) => `note: ${n}`), formatActionDiagnostics(r)].join('\n');
   }
   const lines = [`${head} → ok (${r.method}, ${r.elapsedMs}ms, ${r.settle ? formatSettle(r.settle) : 'settle unknown'})`];
   for (const n of r.notes) lines.push(`note: ${n}`);
@@ -136,13 +138,18 @@ export function formatAction(r: ActionResult): string {
   }
   if (!c.reset) {
     const o = r.observation!;
+    if (o.omitted) lines.push(`controls: ${o.omitted} omitted by budget (observe with a larger limit for current controls)`);
     if (c.removed.length) lines.push(`refs: ${c.removed.length <= 8 ? c.removed.map((x) => x.ref).join(', ') : `${c.removed.length} earlier refs`} no longer exist; act on refs from this result or a fresh observe`);
     if (o.layout.length && !c.layoutAdded.length) lines.push(`layout: ${o.layout.length} existing flag(s) still present`);
   }
+  lines.push(formatActionDiagnostics(r));
+  return lines.join('\n');
+}
+
+function formatActionDiagnostics(r: ActionResult): string {
   const errs = r.newConsoleErrors.map((e) => q(e.text)).join('; ');
   const fails = r.newFailedRequests.map((f) => `${f.method} ${f.url} ${f.status ?? f.failure}`).join('; ');
-  lines.push(`console: ${r.newConsoleErrors.length} new errors${errs ? ` (${errs})` : ''}  network: ${r.newFailedRequests.length} new failures${fails ? ` (${fails})` : ''}`);
-  return lines.join('\n');
+  return `console: ${r.newConsoleErrors.length} new errors${errs ? ` (${errs})` : ''}  network: ${r.newFailedRequests.length} new failures${fails ? ` (${fails})` : ''}`;
 }
 
 export function formatStart(r: StartResult): string {
@@ -221,7 +228,26 @@ export function formatTabs(tabs: TabInfo[]): string {
 
 export function formatError(e: LabErrorJSON): string {
   const lines = [`${e.code}: ${e.message}`];
+  lines.push(`recoverable: ${e.recoverable}`);
   if (e.hint) lines.push(`hint: ${e.hint}`);
+  const control = e.details?.control;
+  if (control && typeof control === 'object') {
+    const s = control as Record<string, unknown>;
+    const parts: string[] = [];
+    if (typeof s.mode === 'string') parts.push(s.mode);
+    if (typeof s.pending === 'string') parts.push(`pending=${s.pending}`);
+    if (typeof s.by === 'string') parts.push(`by=${q(s.by)}`);
+    if (typeof s.since === 'string') parts.push(`since=${q(s.since)}`);
+    if (typeof s.observeRequired === 'boolean') parts.push(`observeRequired=${s.observeRequired}`);
+    if (typeof s.interrupt === 'boolean') parts.push(`interrupt=${s.interrupt}`);
+    if (typeof s.humanInteractions === 'number') parts.push(`humanInteractions=${s.humanInteractions}`);
+    if (s.busy && typeof s.busy === 'object') {
+      const busy = s.busy as Record<string, unknown>;
+      if (typeof busy.command === 'string') parts.push(`busy=${q(busy.command)}`);
+      if (typeof busy.since === 'string') parts.push(`busySince=${q(busy.since)}`);
+    }
+    if (parts.length) lines.push(`control: ${parts.join(' ')}`);
+  }
   const tail = e.details?.logTail;
   if (Array.isArray(tail) && tail.length) lines.push('server log tail:', ...tail.map((l) => `  ${l}`));
   if (typeof e.details?.logFile === 'string') lines.push(`log file: ${e.details.logFile}`);
@@ -233,6 +259,8 @@ export function formatError(e: LabErrorJSON): string {
   if (Array.isArray(options)) lines.push(`options: ${options.map((o) => q(String(o))).join(', ')}`);
   const candidates = e.details?.candidates;
   if (Array.isArray(candidates)) lines.push(`candidates: ${candidates.map((c: any) => `${c.ref} ${c.role} ${q(c.name)}`).join('; ')}`);
+  const sameRole = e.details?.sameRole;
+  if (Array.isArray(sameRole)) lines.push(`same role: ${sameRole.map((c) => q(String(c))).join('; ')}`);
   return lines.join('\n');
 }
 

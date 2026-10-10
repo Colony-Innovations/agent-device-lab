@@ -56,12 +56,22 @@
 </section>
 
 <main class="grid">
-  <section class="panel viewport-panel" aria-label="Live viewport">
-    <h2>Viewport <span id="vp-caption" class="muted small"></span></h2>
+  <section id="viewport-panel" class="panel viewport-panel" aria-label="Live viewport">
+    <div class="vp-toolbar">
+      <h2 id="vp-title">Viewport <span id="vp-caption" class="muted small"></span></h2>
+      <div class="vp-actions" role="group" aria-label="Viewport display">
+        <button id="vp-expand" type="button" aria-haspopup="dialog">Expand view</button>
+        <button id="vp-fullscreen" type="button">Full screen</button>
+        <button id="vp-close" type="button" hidden>Close view</button>
+      </div>
+    </div>
+    <p id="vp-display-note" class="small muted" role="status" hidden></p>
     <p id="vp-now" class="vp-now" role="status"></p>
+    <div id="vp-stage" class="vp-stage">
     <div class="device" id="device">
       <img id="viewport" alt="Live view of the device viewport">
       <div id="vp-empty" class="vp-empty">No frames yet</div>
+    </div>
     </div>
     <section id="human-panel" class="human-panel" hidden aria-label="Take over the browser">
       <p class="human-banner"><strong>You have control of the browser.</strong> The agent is waiting. Your actions are recorded as descriptions only (no typed text).<span id="human-headed" hidden> You can also use the browser window directly.</span></p>
@@ -116,5 +126,6 @@
     <article id="finding-detail" class="finding-detail" hidden></article>
   </section>
 </main>
+<dialog id="vp-dialog" class="vp-dialog" aria-labelledby="vp-title"></dialog>
 </body>
 </html>

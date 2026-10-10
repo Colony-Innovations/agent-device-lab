@@ -4,6 +4,19 @@ All notable changes to Agent Device Lab are recorded here. The format follows [K
 
 Contract versions (profile, results, MCP tools, report, bundle, events) are listed by `agentlab version`; a change to one is called out here. See [docs/compatibility.md](docs/compatibility.md).
 
+## [0.4.0] - 2026-10-10
+
+The live viewport can be expanded or shown full screen, and its frames are sharper. Contract versions are unchanged.
+
+### Added
+
+- Dashboard: **Expand view** and **Full screen** for the live viewport. Both reuse the one stream, keep the device's aspect ratio and keep the supervision controls available; Escape exits full screen first, then closes the expanded view.
+
+### Changed
+
+- Dashboard: live viewport frames are now at most 1920 px wide at JPEG quality 85 (was 800 px, quality 60), so a desktop viewport is no longer downsampled. The 5 fps cap is unchanged. Watching uses more bandwidth and CPU; see [docs/benchmark-2026-10-10-viewport-efficiency.md](docs/benchmark-2026-10-10-viewport-efficiency.md).
+- Text output: an error states whether it is recoverable and the supervision state; a failed action lists its new console errors and failed requests; controls show selected state, title changes are reported, and omitted controls are counted. JSON results are unchanged.
+
 ## [0.3.1] - 2026-10-09
 
 A dependency update, documentation and package metadata; the lab's own code is the same as 0.3.0.

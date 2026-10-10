@@ -57,8 +57,27 @@ body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 syst
 .findings-panel { order: 3; }
 .vp-now { margin: 0 0 10px; text-align: center; font-size: 13px; }
 .vp-now strong { font-weight: 600; }
+.vp-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.vp-toolbar h2 { margin: 0; }
+.vp-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.vp-actions button { font: inherit; font-size: 12px; min-height: 32px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); background: var(--panel); cursor: pointer; }
+.vp-actions button:hover { border-color: var(--accent); }
+.vp-actions button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.vp-dialog { width: calc(100vw - 32px); height: calc(100dvh - 32px); max-width: none; max-height: none; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--ink); }
+.vp-dialog::backdrop { background: rgb(0 0 0 / .65); }
+.vp-dialog[open] { display: flex; flex-direction: column; }
+.vp-dialog .supervision { margin: 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; flex: none; max-height: 30%; overflow: auto; }
+:root:fullscreen .vp-dialog { width: 100vw; height: 100dvh; border: 0; border-radius: 0; }
+.vp-dialog .viewport-panel { position: static; display: flex; flex-direction: column; flex: 1; min-height: 0; border: 0; overflow: auto; }
+.vp-dialog .vp-stage { flex: 1; min-height: 0; display: grid; place-items: center; }
+.vp-dialog .device { width: min(calc(100% - 16px), calc(var(--vp-w, 390) * 1px), calc((var(--stage-height, 600px) - 16px) * var(--vp-w, 390) / var(--vp-h, 844))); transition: none; }
+.vp-dialog .sweep { display: none; }
+.vp-dialog .human-panel { flex: none; max-height: 35%; overflow: auto; }
+.vp-dialog .vp-now, .vp-dialog .vp-toolbar { flex: none; }
+@media (max-width: 720px) { .vp-dialog { width: calc(100vw - 12px); height: calc(100dvh - 12px); } }
+@media (max-height: 600px) { .vp-dialog #vp-display-note { display: none; } .vp-dialog .vp-toolbar { margin-bottom: 6px; } .vp-dialog .vp-now { margin-bottom: 6px; font-size: 12px; } }
 /* Sized to the device on screen (--vp-w × --vp-h in CSS pixels), shrunk to fit the column and the window. */
-.device { position: relative; box-sizing: border-box; margin: 0 auto; width: min(100%, calc(var(--vp-w, 390) * 1px + 16px), calc(max(420px, 100vh - 330px) * var(--vp-w, 390) / var(--vp-h, 844))); border: 8px solid #20252c; border-radius: 22px; overflow: hidden; background: #000; aspect-ratio: var(--vp-w, 390) / var(--vp-h, 844); transition: width .25s ease; }
+.device { position: relative; box-sizing: content-box; margin: 0 auto; width: min(calc(100% - 16px), calc(var(--vp-w, 390) * 1px), calc(max(404px, 100vh - 346px) * var(--vp-w, 390) / var(--vp-h, 844))); border: 8px solid #20252c; border-radius: 22px; overflow: hidden; background: #000; aspect-ratio: var(--vp-w, 390) / var(--vp-h, 844); transition: width .25s ease; }
 @media (prefers-reduced-motion: reduce) { .device { transition: none; } }
 .device img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; background: #fff; }
 .device img:not([src]) { visibility: hidden; }

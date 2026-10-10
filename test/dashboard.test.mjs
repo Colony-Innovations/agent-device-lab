@@ -162,7 +162,7 @@ test('frames are captured only while a viewer is connected', async () => {
   const a = mjpeg(`${base}/api/viewport?token=${token}`);
   await until(() => a.frames.length >= 3, 3000, 'frames for viewer a');
   assert.equal(source.starts, 1);
-  assert.deepEqual(source.opts, { maxFps: 5, maxWidth: 800, quality: 60 }, 'capped rate and size by default');
+  assert.deepEqual(source.opts, { maxFps: 5, maxWidth: 1920, quality: 85 }, 'clearer desktop frames with capped rate and size by default');
   assert.deepEqual([...a.frames[0]], [0xff, 0xd8, 0, 0xff, 0xd9]);
 
   const b = mjpeg(`${base}/api/viewport?token=${token}`);         // a second viewer shares the capture

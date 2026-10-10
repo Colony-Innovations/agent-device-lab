@@ -105,7 +105,6 @@ The command table, the contract versions and the dashboard's event feed are the 
 ### Web items
 
 - Cropped evidence images, and a `screenshot` action.
-- A text-only MCP result mode, or a slimmer structured payload, then measure it.
 - A larger benchmark: more independent applications, more runs per cell, more than one model.
 - Interaction coverage: touch drag, custom list boxes, downloads, shadow DOM and iframes in accessible names.
 - Exploration beyond clicks: hover and swipe-to-reveal; depth-2 states that need input.

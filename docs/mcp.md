@@ -96,7 +96,7 @@ Every tool call returns one MCP result.
 
 Claude Code 2.1.280 gives the model `structuredContent` when it is present, instead of `content`. Agents using it therefore read the JSON, not the text rendering.
 
-A failed call has `isError: true`, `content` like `error stale_ref: e4 is no longer attached` (with the hint on a following line), and `structuredContent`:
+A failed call has `isError: true`, `content` like `error stale_ref: e4 is no longer attached` (with recovery status and the hint on following lines), and `structuredContent`:
 
 ```json
 { "error": { "code": "stale_ref", "message": "e4 is no longer attached to the page", "hint": "Run observe and use a fresh ref.", "recoverable": true, "details": { } } }

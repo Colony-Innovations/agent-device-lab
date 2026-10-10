@@ -11,7 +11,7 @@ The same commands work from a terminal (`agentlab`), from an MCP server for Clau
 
 ![The dashboard after a run on the demo app: the live viewport in the centre, the timeline of actions on the left, and the findings on the right with one selected to show its evidence and reproduction steps](docs/images/dashboard.png)
 
-**Status:** Web V1 (`0.3.1`). It is tested on Linux x64 (Debian 12 and Ubuntu 24.04) with Node.js 22 and 24. macOS, Windows and arm64 are untested, and Alpine does not work. See [Limitations](#limitations).
+**Status:** Web V1 (`0.4.0`). It is tested on Linux x64 (Debian 12 and Ubuntu 24.04) with Node.js 22 and 24. macOS, Windows and arm64 are untested, and Alpine does not work. See [Limitations](#limitations).
 
 ## Install
 
