@@ -52,6 +52,12 @@ What to expect:
 - **After the session ends.** A page that was open keeps showing the last state and frame. Reloading it then fails, because the process that served it has exited. Run artifacts, including evidence frames in `runs/<session>/frames/`, stay in `.agentlab/`.
 - **Frames never reach the agent.** They are not in any command or MCP result.
 
+### Expanding the viewport
+
+Use **Expand view** to give the live screen most of the window, or **Full screen** to hide the browser chrome as well. The same stream continues in either mode, with the device's aspect ratio preserved; opening the larger view does not change the application's viewport or start a second capture. Desktop frames retain their native CSS resolution up to 1920 pixels wide, with higher JPEG quality for clearer text.
+
+The session controls remain available when using a control link. **Exit full screen** returns to the expanded view; **Close view** returns to the timeline and findings and restores keyboard focus. Escape exits full screen first, then closes the expanded view. Browsers that refuse full screen still offer the expanded view. Smaller devices fit the available height without being stretched beyond their native CSS size.
+
 ## Supervision workflow
 
 Supervision needs the control link. The state machine, and what the agent is told, are in [architecture.md](architecture.md#supervision).
@@ -105,7 +111,7 @@ What the dashboard shows of what the *agent* typed: a typed value appears only w
 | limit | value |
 | --- | --- |
 | Live viewport frame rate | at most 5 frames per second; a frame is sent only when the screen changes |
-| Frame size | at most 800 px wide, JPEG quality 60 |
+| Frame size | at most 1920 px wide, JPEG quality 85; smaller devices remain at their native CSS size |
 | When capture runs | only while a viewport viewer is connected and its tab is visible; stops when the last viewer leaves |
 | Open event streams | 32 per dashboard; more get 503 |
 | Open viewport viewers | 8 per dashboard; more get 503 |
@@ -117,6 +123,10 @@ What the dashboard shows of what the *agent* typed: a typed value appears only w
 | One session per process | there is no multi-session overview |
 
 Chromium may produce frames more often than the 5 fps delivered, and a minimised headed window may stop producing frames. The viewport is the emulated screen, not a phone.
+
+The 5 fps cap is a resource budget: it limits JPEG encoding, transfer and viewer decoding while keeping the newest changed frame visible. It is suitable for following clicks, forms and navigation, but is not smooth video for judging animations. It does not slow actions down for readability. Higher resolution uses more bandwidth while watching; no live frames are captured without a viewport viewer, and these frames never contribute to agent tokens. Sweeps and scans separately hold each watched state briefly so a person can see it.
+
+The [10 October benchmark](benchmark-2026-10-10-viewport-efficiency.md) compared the old stream, sharp 5 fps and sharp 10 fps on mobile and desktop. Sharp 10 fps roughly doubled animation bandwidth and increased CPU use, without a consistent improvement in ordinary action timing.
 
 ## Security notes
 

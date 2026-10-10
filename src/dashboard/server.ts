@@ -39,7 +39,9 @@ export interface DashboardStats {
   screencast: { running: boolean; starts: number; stops: number; framesCaptured: number; framesSent: number; bytesSent: number };
 }
 
-export const DEFAULT_SCREENCAST: ScreencastOptions = { maxFps: 5, maxWidth: 800, quality: 60 };
+// Preserve desktop text at 1× CSS resolution; Lab never upscales smaller devices.
+// Keep the rate conservative: clearer frames need more encoding and bandwidth.
+export const DEFAULT_SCREENCAST: ScreencastOptions = { maxFps: 5, maxWidth: 1920, quality: 85 };
 const BOUNDARY = 'agentlab-frame';
 const PART = `\r\n--${BOUNDARY}\r\nContent-Type: image/jpeg\r\n\r\n`;
 /** A slow viewer skips frames rather than buffering them without limit. */

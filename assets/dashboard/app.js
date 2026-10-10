@@ -327,6 +327,74 @@ setInterval(() => {
 }, 200);
 document.addEventListener('visibilitychange', updateViewport);
 
+// Move the existing viewport into a modal stage: expanding never opens a second stream.
+const viewportPanel = $('viewport-panel');
+const viewportHome = document.createComment('viewport position');
+viewportPanel.before(viewportHome);
+const viewportDialog = $('vp-dialog');
+const supervisionHome = document.createComment('supervision position');
+$('supervision').before(supervisionHome);
+let viewportOpener;
+new ResizeObserver(([entry]) => {
+  $('device').style.setProperty('--stage-height', `${entry.contentRect.height}px`);
+}).observe($('vp-stage'));
+
+function expandViewport(opener) {
+  if (viewportDialog.open) return;
+  viewportOpener = opener;
+  viewportDialog.append($('supervision'), viewportPanel);
+  $('vp-expand').hidden = true;
+  $('vp-close').hidden = false;
+  $('vp-display-note').textContent = 'Press Escape or close this view to return to the timeline and findings.';
+  $('vp-display-note').hidden = false;
+  viewportDialog.showModal();
+  $('vp-close').focus();
+}
+
+async function closeViewport() {
+  if (document.fullscreenElement === document.documentElement) await document.exitFullscreen().catch(() => {});
+  viewportDialog.close();
+}
+
+$('vp-expand').addEventListener('click', (e) => expandViewport(e.currentTarget));
+$('vp-close').addEventListener('click', closeViewport);
+$('vp-fullscreen').addEventListener('click', async (e) => {
+  if (document.fullscreenElement === document.documentElement) {
+    await document.exitFullscreen().catch(() => {});
+    return;
+  }
+  expandViewport(e.currentTarget);
+  try {
+    await document.documentElement.requestFullscreen();
+  } catch {
+    $('vp-display-note').textContent = 'Full screen is unavailable in this browser. You can still use the expanded view.';
+  }
+});
+document.addEventListener('fullscreenchange', () => {
+  $('vp-fullscreen').textContent = document.fullscreenElement === document.documentElement ? 'Exit full screen' : 'Full screen';
+});
+viewportDialog.addEventListener('cancel', (e) => {
+  e.preventDefault();
+  if (document.fullscreenElement === document.documentElement) void document.exitFullscreen().catch(() => {});
+  else void closeViewport();
+});
+viewportDialog.addEventListener('keydown', (e) => {
+  if (e.key !== 'Tab') return;
+  const controls = [...viewportDialog.querySelectorAll('button, input, [tabindex="0"]')]
+    .filter((el) => !el.disabled && el.getClientRects().length);
+  const first = controls[0], last = controls[controls.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+});
+viewportDialog.addEventListener('close', () => {
+  supervisionHome.after($('supervision'));
+  viewportHome.after(viewportPanel);
+  $('vp-expand').hidden = false;
+  $('vp-close').hidden = true;
+  $('vp-display-note').hidden = true;
+  viewportOpener?.focus();
+});
+
 // ---------- timeline ----------
 
 function renderTimeline() {

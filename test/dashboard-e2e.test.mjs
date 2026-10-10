@@ -8,6 +8,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
 import { Lab } from '../dist/core/lab.js';
+import { DEFAULT_SCREENCAST } from '../dist/dashboard/server.js';
 import { probe } from '../dist/core/project-runner.js';
 import { mjpeg, sse, until } from './helpers/stream.mjs';
 
@@ -140,6 +141,20 @@ process.on('SIGTERM', () => process.exit(0));
     assert.ok(widths.includes(320) && widths.includes(768), `frames at both sweep widths, got ${[...new Set(widths)]}`);
     assert.equal(widths.at(-1), 390, 'the stream returns to the session page');
     assert.ok(watched >= 2400, `each watched width stays on screen (${watched} ms)`);
+
+    // The default dashboard stream preserves desktop text at its native CSS resolution.
+    await lab.close();
+    const desktop = new Lab({ stateDir: join(home, 'anim-desktop') });
+    try {
+      await desktop.start({ project, headed: false, device: 'desktop-1440' });
+      let desktopWidth = 0;
+      const stopDesktop = await desktop.screencast((jpeg) => {
+        desktopWidth = jpeg.readUInt16BE(jpeg.indexOf(Buffer.from([0xff, 0xc0])) + 7);
+      }, DEFAULT_SCREENCAST);
+      try { await until(() => desktopWidth > 0, 5000, 'a full-resolution desktop frame'); }
+      finally { await stopDesktop(); }
+      assert.equal(desktopWidth, 1440, 'desktop frames are no longer downsampled to 800px');
+    } finally { await desktop.close(); }
   } finally {
     await lab.close();
     rmSync(project, { recursive: true, force: true });

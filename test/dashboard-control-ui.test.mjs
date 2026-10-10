@@ -162,6 +162,8 @@ test('while a person has control the viewport takes taps and scrolls, text and k
   assert.equal(await disabled('takeover'), true);
 
   // Tap
+  await page.locator('#vp-expand').click();
+  assert.equal(await page.locator('#vp-dialog #supervision').isVisible(), true, 'supervision stays available in the expanded view');
   const box = await page.locator('#viewport').boundingBox();
   await page.locator('#viewport').click({ position: { x: box.width / 4, y: box.height / 2 } });
   await until(() => inputCalls.some((i) => i.type === 'tap'), 'a tap');
@@ -181,6 +183,20 @@ test('while a person has control the viewport takes taps and scrolls, text and k
   await page.locator('#human-panel [data-key="ArrowDown"]').click();
   await until(() => inputCalls.filter((i) => i.type === 'key').length === 2, 'two keys');
   assert.deepEqual(inputCalls.filter((i) => i.type === 'key').map((i) => i.key), ['Shift+Tab', 'ArrowDown']);
+  for (const size of [{ width: 640, height: 320 }, { width: 320, height: 480 }]) {
+    await page.setViewportSize(size);
+    await page.waitForFunction(() => {
+      const frame = document.getElementById('viewport').getBoundingClientRect();
+      const dialog = document.getElementById('vp-dialog').getBoundingClientRect();
+      return frame.width > 0 && frame.height > 0 && frame.bottom <= dialog.bottom && frame.right <= dialog.right;
+    });
+    const frame = await page.locator('#viewport').boundingBox();
+    assert.ok(Math.abs(frame.width / frame.height - 390 / 844) < 0.01, `mobile device ratio preserved at ${size.width}×${size.height}`);
+  }
+  await page.setViewportSize({ width: 1360, height: 1000 });
+  await page.locator('#vp-close').click();
+  await page.locator('#vp-dialog').waitFor({ state: 'hidden' });
+  assert.equal(await page.locator('#supervision').isVisible(), true);
 });
 
 test('typed text is sent once and appears nowhere on the page afterwards', async () => {
