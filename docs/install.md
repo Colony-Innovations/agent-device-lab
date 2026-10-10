@@ -40,7 +40,7 @@ agentlab install-browser
 agentlab version && agentlab doctor
 
 # B. per project (pin the exact version so the whole team runs the same one)
-npm install --save-dev --save-exact agent-device-lab@0.3.1 && npx agentlab version
+npm install --save-dev --save-exact agent-device-lab@0.4.0 && npx agentlab version
 
 # C. once, with nothing installed
 npx --yes --package agent-device-lab agentlab version
@@ -118,7 +118,7 @@ The `web` section becomes `services.web`, `"app": {"service": "web"}` is added a
 **A profile from the future.** A profile whose `schemaVersion` is newer than the installed version reads is refused, by `start`, `doctor`, `migrate` and `test`, with `profile_too_new`:
 
 ```
-error profile_too_new: agentlab.json has schemaVersion 3; this agentlab 0.3.1 reads schemaVersion 1–2
+error profile_too_new: agentlab.json has schemaVersion 3; this agentlab 0.4.0 reads schemaVersion 1–2
 hint: Upgrade agentlab (see docs/install.md), or use a profile written for this version.
 ```
 

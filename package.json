@@ -1,6 +1,6 @@
 {
   "name": "agent-device-lab",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Lets a coding agent start your web app, use it at phone, tablet or desktop size, and report what breaks, while you watch.",
   "keywords": [
     "agent",

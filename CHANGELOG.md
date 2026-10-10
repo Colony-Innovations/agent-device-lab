@@ -4,7 +4,9 @@ All notable changes to Agent Device Lab are recorded here. The format follows [K
 
 Contract versions (profile, results, MCP tools, report, bundle, events) are listed by `agentlab version`; a change to one is called out here. See [docs/compatibility.md](docs/compatibility.md).
 
-## [Unreleased]
+## [0.4.0] - 2026-10-10
+
+The live viewport can be expanded or shown full screen, and its frames are sharper. Contract versions are unchanged.
 
 ### Added
 
