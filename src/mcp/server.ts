@@ -26,8 +26,8 @@ export async function runMcpServer(opts: { stateDir: string; headless?: boolean;
   const version = productVersion();
   const ui = opts.ui ?? true;
   const feed = new SessionFeed();
-  // A new session rotates the dashboard's tokens (old viewers lose access), so the person's control URL
-  // is re-published whenever one starts; it would otherwise stop working after the agent's second start.
+  // A new session rotates the dashboard's tokens. Connected tabs receive a handoff; re-publish the
+  // person's control URL too, so `agentlab ui` and newly opened tabs use the current credentials.
   let announce: (() => void) | undefined;
   const host = new SessionHost({
     stateDir: opts.stateDir, evidenceFrames: ui,

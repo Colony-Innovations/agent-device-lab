@@ -4,6 +4,17 @@ All notable changes to Agent Device Lab are recorded here. The format follows [K
 
 Contract versions (profile, results, MCP tools, report, bundle, events) are listed by `agentlab version`; a change to one is called out here. See [docs/compatibility.md](docs/compatibility.md).
 
+## [0.4.1] - 2026-10-30
+
+Open dashboards now follow new sessions in the same MCP server automatically. Contract versions are unchanged.
+
+### Fixed
+
+- Dashboard: when the agent stops a session and starts another in the same MCP process, connected tabs receive a fresh token and reload automatically. View-only tabs stay view-only, and control tabs keep their supervision controls. The previous session's timeline, findings and cached evidence are cleared, including when finding IDs are reused.
+- Dashboard: keep the event stream attached after a session ends so the page can receive the next session's link. Viewport capture still stops at the end of the session, and old tokens remain invalid for new requests. Replacement tokens are never stored in feed snapshots or replay history.
+
+Tabs that were disconnected during the change, and dashboards whose process exited (including a stopped CLI daemon), still need the current link from `agentlab ui`.
+
 ## [0.4.0] - 2026-10-10
 
 The live viewport can be expanded or shown full screen, and its frames are sharper. Contract versions are unchanged.

@@ -26,7 +26,9 @@ There are two links, and they differ in what they may do:
 | Shows the viewport, timeline, status and findings | yes | yes |
 | Pause, take over, return, stop, emergency stop; send input | no: the page says "view-only link: controls need the URL from `agentlab ui`", and the server refuses with 401 | yes |
 
-For an MCP server, run `agentlab ui` in the directory the server was started from. The MCP server also prints the control link to its stderr (the client's log) when a session starts. A new session in the same process changes both tokens, so a page left open from the previous session loses access; reload it with the new link.
+For an MCP server, run `agentlab ui` in the directory the server was started from. The MCP server also prints the control link to its stderr (the client's log) when a session starts. When the agent stops and starts a new session in that same MCP process, connected dashboard tabs automatically receive their replacement token and reload to show the new session. View-only tabs stay view-only; control tabs keep their controls. The old session's timeline, findings and cached frames are cleared.
+
+Old links still expire. A tab that was disconnected during the change, or whose dashboard process exited (including a CLI daemon stopped with `agentlab stop`), needs the current link from `agentlab ui`.
 
 The token is in the URL's `#fragment`, so it is never sent in a request or a Referer header. Treat the control link like a password for the session.
 
@@ -47,9 +49,9 @@ The token is in the URL's `#fragment`, so it is never sent in a request or a Ref
 
 What to expect:
 
-- **Closing the tab never stops the run.** Stopping the session closes the dashboard's streams and releases its port, along with the browser and any service the lab started.
+- **Closing the tab never stops the run.** Stopping a session closes its browser and any service the lab started. A CLI daemon also closes its dashboard and releases its port; an MCP server keeps the dashboard available for its next session.
 - **Refresh.** Refreshing the page restores the status, the recent timeline (the last 200 entries) and all findings.
-- **After the session ends.** A page that was open keeps showing the last state and frame. Reloading it then fails, because the process that served it has exited. Run artifacts, including evidence frames in `runs/<session>/frames/`, stay in `.agentlab/`.
+- **After the session ends.** A page that was open keeps showing the last state and frame. If the MCP server stays running, the page follows its next session automatically. Reloading fails after the process that served it exits. Run artifacts, including evidence frames in `runs/<session>/frames/`, stay in `.agentlab/`.
 - **Frames never reach the agent.** They are not in any command or MCP result.
 
 ### Expanding the viewport
