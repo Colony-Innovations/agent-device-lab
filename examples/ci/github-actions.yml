@@ -8,7 +8,7 @@
 name: agentlab
 
 env:
-  AGENTLAB_VERSION: 0.4.0
+  AGENTLAB_VERSION: 0.4.1
 
 on:
   pull_request:

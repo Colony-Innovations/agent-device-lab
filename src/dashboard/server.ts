@@ -69,7 +69,8 @@ export class Dashboard {
   private token = newToken();
   /** Read-only access; this is the URL placed in start and status results that agents see. */
   private viewToken = newToken();
-  private readonly events = new Set<ServerResponse>();
+  /** Each authenticated stream keeps its access level for the next session's handoff. */
+  private readonly events = new Map<ServerResponse, boolean>();
   private readonly viewers = new Set<ServerResponse>();
   private lastFrame?: Buffer;
   private cast?: Promise<(() => Promise<void>) | undefined>;
@@ -94,7 +95,7 @@ export class Dashboard {
       d.server.listen(opts.port ?? 0, '127.0.0.1', () => resolve());
     });
     d.port = (d.server.address() as AddressInfo).port;
-    d.heartbeat = setInterval(() => { for (const res of d.events) res.write(': ping\n\n'); }, HEARTBEAT_MS);
+    d.heartbeat = setInterval(() => { for (const res of d.events.keys()) res.write(': ping\n\n'); }, HEARTBEAT_MS);
     d.heartbeat.unref();
     return d;
   }
@@ -133,16 +134,20 @@ export class Dashboard {
 
   private onMessage(m: FeedMessage): void {
     if (m.event.type === 'reset') {
-      // A new session: previous viewers and the old tokens lose access.
+      // Rotate credentials, but let already authenticated, connected dashboards follow the new
+      // session. Send only the matching access level, outside the shared/replayable feed.
       this.token = newToken();
       this.viewToken = newToken();
+      for (const [res, control] of this.events) {
+        res.write(`event: session-replaced\ndata: ${JSON.stringify({ token: control ? this.token : this.viewToken })}\n\n`);
+      }
       this.lastFrame = undefined;
       this.endStreams();
       void this.stopCast();
       return;
     }
     const frame = `id: ${m.seq}\nevent: feed\ndata: ${JSON.stringify(m)}\n\n`;
-    for (const res of this.events) res.write(frame);
+    for (const res of this.events.keys()) res.write(frame);
     if (m.event.type === 'status') {
       const state = m.event.status.state;
       if (state === 'active') void this.ensureCast();
@@ -153,7 +158,7 @@ export class Dashboard {
   }
 
   private endStreams(): void {
-    for (const res of [...this.events, ...this.viewers]) res.end();
+    for (const res of [...this.events.keys(), ...this.viewers]) res.end();
     this.events.clear();
     this.viewers.clear();
   }
@@ -243,16 +248,19 @@ export class Dashboard {
     res.writeHead(404).end();
   }
 
-  private authorized(req: IncomingMessage, url: URL): boolean {
+  private requestToken(req: IncomingMessage, url: URL): string | null {
     const header = req.headers.authorization;
-    const given = header?.startsWith('Bearer ') ? header.slice(7) : url.searchParams.get('token');
+    return header?.startsWith('Bearer ') ? header.slice(7) : url.searchParams.get('token');
+  }
+
+  private authorized(req: IncomingMessage, url: URL): boolean {
+    const given = this.requestToken(req, url);
     return !!given && (same(given, this.token) || same(given, this.viewToken));
   }
 
   /** Whether this request carries the control token (the page shows control buttons only then). */
   private canControl(req: IncomingMessage, url: URL): boolean {
-    const header = req.headers.authorization;
-    const given = header?.startsWith('Bearer ') ? header.slice(7) : url.searchParams.get('token');
+    const given = this.requestToken(req, url);
     return !!given && !!this.opts.control && same(given, this.token);
   }
 
@@ -327,7 +335,7 @@ export class Dashboard {
       const snap = this.opts.feed.snapshot();
       res.write(`id: ${snap.seq}\nevent: snapshot\ndata: ${JSON.stringify(snap)}\n\n`);
     }
-    this.events.add(res);
+    this.events.set(res, same(this.requestToken(req, url)!, this.token));
     res.on('close', () => { this.events.delete(res); });
   }
 

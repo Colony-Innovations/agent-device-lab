@@ -73,7 +73,8 @@ test('access control: token required, host and origin pinned, read-only', async 
   assert.ok(!page.body.includes('s-1'), 'no session data without the token');
 
   assert.equal((await get('/api/state')).status, 401);
-  assert.equal((await get(`/api/state?token=${token.slice(0, -1)}x`)).status, 401, 'wrong token');
+  const wrongToken = token.slice(0, -1) + (token.endsWith('x') ? 'y' : 'x');
+  assert.equal((await get(`/api/state?token=${wrongToken}`)).status, 401, 'wrong token');
   assert.equal((await get('/api/state?token=short')).status, 401, 'wrong length');
   assert.equal((await get('/api/events')).status, 401);
   assert.equal((await get('/api/viewport')).status, 401);
@@ -95,19 +96,40 @@ test('access control: token required, host and origin pinned, read-only', async 
   assert.equal((await get(`/api/frames/F1.jpg?token=${token}`)).status, 404, 'no frame recorded');
 });
 
-test('a new session rotates the token and disconnects viewers of the previous one', async () => {
+test('a new session hands connected viewers matching tokens, revokes old links and ends old streams', async () => {
   const events = sse(`${base}/api/events?token=${token}`);
+  const oldViewToken = parse(dash.viewUrl).token;
+  const readOnly = sse(`${base}/api/events`, { authorization: `Bearer ${oldViewToken}` });
   const view = mjpeg(`${base}/api/viewport?token=${token}`);
   await events.next((m) => m.event === 'snapshot');
+  await readOnly.next((m) => m.event === 'snapshot');
   await until(() => view.frames.length > 0, 3000, 'first frame');
   feed.apply(closed);
+  const beforeReset = feed.snapshot().seq;
   feed.apply(starting);                                          // next session in the same process (MCP)
+  const handoff = await events.next((m) => m.event === 'session-replaced');
+  const viewHandoff = await readOnly.next((m) => m.event === 'session-replaced');
+  assert.deepEqual(handoff.json, { token: parse(dash.url).token });
+  assert.deepEqual(viewHandoff.json, { token: parse(dash.viewUrl).token });
+  assert.notEqual(handoff.json.token, viewHandoff.json.token, 'viewers never receive the control token');
+  assert.equal(handoff.id, undefined, 'credentials are never replayed as feed messages');
   await events.waitEnd();
+  await readOnly.waitEnd();
   await until(() => view.ended, 3000, 'viewport stream to end');
   assert.equal((await get(`/api/state?token=${token}`)).status, 401, 'the old link is revoked');
+  assert.equal((await get(`/api/state?token=${oldViewToken}`)).status, 401);
+  assert.equal((await get(`/api/events?token=${token}`)).status, 401, 'a disconnected old link cannot obtain a handoff');
   const next = parse(dash.url).token;
   assert.notEqual(next, token);
   assert.equal((await get(`/api/state?token=${next}`)).status, 200);
+  assert.equal((await get(`/api/state?token=${viewHandoff.json.token}`)).status, 200);
+  const replay = JSON.stringify(feed.since(beforeReset));
+  assert.ok(replay, 'the new session has replayable feed messages');
+  const snapshot = JSON.stringify(feed.snapshot());
+  for (const credential of [next, viewHandoff.json.token]) {
+    assert.ok(!replay.includes(credential));
+    assert.ok(!snapshot.includes(credential));
+  }
 });
 
 test('events: snapshot first, then live messages in order', async () => {

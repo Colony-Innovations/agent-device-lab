@@ -6,12 +6,14 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+import { chromium } from 'playwright';
 import { probe } from '../dist/core/project-runner.js';
+import { readDashboardRecord } from '../dist/daemon/state.js';
 
 const home = mkdtempSync(join(tmpdir(), 'agentlab-mcp-'));
 const project = resolve('fixtures/invoice-app');
 const fixture = { url: 'http://127.0.0.1:5199', readiness: { path: '/health', status: 200 } };
-let client;
+let client, browser, watcher, owner;
 
 before(async () => {
   client = new Client({ name: 'agentlab-test', version: '0.0.0' });
@@ -21,6 +23,7 @@ before(async () => {
   }));
 });
 after(async () => {
+  await browser?.close();
   await client?.close();
   rmSync(home, { recursive: true, force: true });
 });
@@ -61,6 +64,16 @@ test('an MCP client completes the clean invoice flow', async () => {
   assert.equal(state.status.sessionId, start.data.session.id);
   assert.equal(state.status.state, 'active');
 
+  // Leave both types of dashboard open across stop/start, just as a person watching the agent does.
+  browser = await chromium.launch();
+  watcher = await browser.newPage();
+  owner = await browser.newPage();
+  await watcher.goto(start.data.dashboard.url);
+  await owner.goto(readDashboardRecord(home).url);
+  await watcher.locator('#ctl-viewonly').waitFor({ state: 'visible' });
+  await owner.locator('#supervision').waitFor({ state: 'visible' });
+  await watcher.waitForFunction(() => document.getElementById('state').textContent === 'active');
+
   let r = await call('click', { ref: refOf(obs, 'button', 'New invoice') });
   assert.equal(r.data.changes.dialog.to, 'Create invoice');
   obs = r.data.observation;
@@ -89,11 +102,29 @@ test('an MCP client completes the clean invoice flow', async () => {
 
   const stop = await call('stop');
   assert.equal(stop.data.server.stopped, true);
+  await watcher.waitForFunction(() => document.getElementById('state').textContent === 'ended');
 });
 
 test('an MCP client retrieves the seeded mobile defect finding', async () => {
   const start = await call('start', { project });                                   // a fresh session after stop
   assert.ok(!start.isError, start.content?.[0]?.text);
+  await watcher.waitForURL(start.data.dashboard.url);
+  await owner.waitForURL(readDashboardRecord(home).url);
+  for (const page of [watcher, owner]) {
+    await page.waitForFunction(() => document.getElementById('state').textContent === 'active');
+    assert.equal(await page.locator('#conn').textContent(), 'live');
+    assert.equal(await page.locator('#notice').isVisible(), false);
+    assert.doesNotMatch(await page.locator('#timeline').innerText(), /Acme Ltd|Mark as paid/, 'old session timeline was discarded');
+    await page.waitForFunction(() => document.getElementById('viewport').naturalWidth > 0);
+  }
+  assert.equal(await watcher.locator('#ctl-viewonly').isVisible(), true, 'watcher stays view-only');
+  assert.equal(await watcher.locator('#supervision').isVisible(), false);
+  assert.equal(await owner.locator('#supervision').isVisible(), true, 'owner keeps supervision');
+  await owner.locator('#ctl-pause').click();
+  await owner.waitForFunction(() => document.getElementById('ctl-badge').textContent === 'Paused');
+  await owner.locator('#ctl-resume').click();
+  await owner.waitForFunction(() => document.getElementById('ctl-badge').textContent === 'Agent in control');
+  await call('observe'); // resuming supervision requires the agent to look again
   let r = await call('click', { role: 'link', name: 'Reports' });
   assert.ok(r.data.newFindings.some((f) => f.kind === 'control-clipped' && f.target.name === 'Export CSV'));
   r = await call('click', { role: 'button', name: 'Export CSV' });
@@ -118,6 +149,34 @@ test('an MCP client retrieves the seeded mobile defect finding', async () => {
 
   await call('stop');
   assert.equal((await probe(fixture)).kind, 'down');
+});
+
+test('dashboard handoff repeats and clears previous findings and evidence', async () => {
+  await watcher.locator('#findings li.item').first().waitFor();
+  await watcher.locator('#findings li.item').first().click();
+  await watcher.locator('#finding-detail img').first().waitFor();
+  const start = await call('start', { project });
+  assert.ok(!start.isError, start.content?.[0]?.text);
+  await watcher.waitForURL(start.data.dashboard.url);
+  await owner.waitForURL(readDashboardRecord(home).url);
+  await watcher.waitForFunction(() => document.getElementById('state').textContent === 'active');
+  assert.equal(await watcher.locator('#findings li.item').count(), 0);
+  assert.equal(await watcher.locator('#finding-detail').isVisible(), false);
+  assert.doesNotMatch(await watcher.locator('#timeline').innerText(), /Export CSV/);
+
+  // Finding IDs restart at F1. Its evidence must be fetched with the new session's token.
+  const freshFrame = watcher.waitForResponse((r) => r.url().startsWith(`${new URL(watcher.url()).origin}/api/frames/F1.jpg?`) && r.ok());
+  await call('click', { role: 'link', name: 'Reports' });
+  const response = await freshFrame;
+  assert.equal(new URL(response.url()).searchParams.get('token'), new URLSearchParams(new URL(start.data.dashboard.url).hash.slice(1)).get('token'));
+  assert.equal(response.headers()['content-type'], 'image/jpeg');
+  const fetched = await fetch(response.url());
+  const frame = Buffer.from(await fetched.arrayBuffer());
+  assert.equal(fetched.status, 200);
+  assert.deepEqual([...frame.subarray(0, 2)], [0xff, 0xd8], 'new evidence is a JPEG');
+  await watcher.locator('#findings li.item').first().click();
+  await watcher.waitForFunction(() => document.querySelector('#finding-detail img')?.naturalWidth > 0);
+  await call('stop');
 });
 
 test('frames stay out of tool results, and each session gets a fresh dashboard token', async () => {

@@ -53,6 +53,16 @@ function connect() {
   loadCapabilities();
   source = new EventSource(api('/api/events'));
   source.addEventListener('open', () => setConn('live', 'live'));
+  source.addEventListener('session-replaced', (e) => {
+    const next = JSON.parse(e.data).token;
+    if (typeof next !== 'string' || !/^[\w-]{32}$/.test(next)) return;
+    source.close();
+    setConn('reconnecting', 'new session…');
+    // Replace the fragment without keeping the expired link in history, then reload to discard
+    // the previous session's state, pending requests and cached evidence frames.
+    history.replaceState(null, '', `#token=${encodeURIComponent(next)}`);
+    location.reload();
+  });
   source.addEventListener('snapshot', (e) => {
     const snap = JSON.parse(e.data);
     model.timeline = snap.timeline;
@@ -72,9 +82,9 @@ function connect() {
   source.addEventListener('feed', (e) => apply(JSON.parse(e.data).event));
   source.addEventListener('error', () => {
     const s = model.status && model.status.state;
+    if (s === 'ended' || s === 'failed') return setConn('closed', 'session over');
     if (source.readyState === EventSource.CLOSED) {
       // The server refused the stream (e.g. 401 after a new session rotated the token) or went away.
-      if (s === 'ended' || s === 'failed') return setConn('closed', 'session over');
       setConn('denied', 'disconnected');
       checkAccess();
     } else {
@@ -270,7 +280,8 @@ function setStatus(s) {
   }
   if (s.state === 'ended' || s.state === 'failed') {
     setConn('closed', 'session over');
-    if (source) source.close();
+    // Keep the event stream attached: an MCP server can start another session and hand us its link.
+    // Frame capture still stops when the session ends.
   }
   if (s.control) { model.control = s.control; model.controlEpoch++; }
   renderControl();
